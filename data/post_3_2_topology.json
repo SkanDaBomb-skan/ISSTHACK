@@ -46,13 +46,19 @@
       "type": "Heavy_Connector",
       "macro_phase": 1,
       "sub_group": "CENTRAL_CORE",
-      "can_parallelize_with": ["COMP_102", "COMP_103"],
+      "can_parallelize_with": [
+        "COMP_102",
+        "COMP_103"
+      ],
       "spatial_coordinates": {
         "x": 600,
         "y": 420,
         "projection_color_hex": "#00E5FF",
         "approach_angle_default_deg": 90,
-        "approach_angle_alternatives_deg": [75, 105]
+        "approach_angle_alternatives_deg": [
+          75,
+          105
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -68,13 +74,19 @@
       "type": "Ground_Lug",
       "macro_phase": 1,
       "sub_group": "CENTRAL_CORE",
-      "can_parallelize_with": ["COMP_101", "COMP_103"],
+      "can_parallelize_with": [
+        "COMP_101",
+        "COMP_103"
+      ],
       "spatial_coordinates": {
         "x": 510,
         "y": 450,
         "projection_color_hex": "#00E5FF",
         "approach_angle_default_deg": 45,
-        "approach_angle_alternatives_deg": [30, 60]
+        "approach_angle_alternatives_deg": [
+          30,
+          60
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_pronation",
@@ -90,13 +102,19 @@
       "type": "Fuse_Box_Bridge",
       "macro_phase": 1,
       "sub_group": "CENTRAL_CORE",
-      "can_parallelize_with": ["COMP_101", "COMP_102"],
+      "can_parallelize_with": [
+        "COMP_101",
+        "COMP_102"
+      ],
       "spatial_coordinates": {
         "x": 690,
         "y": 450,
         "projection_color_hex": "#00E5FF",
         "approach_angle_default_deg": 135,
-        "approach_angle_alternatives_deg": [120, 150]
+        "approach_angle_alternatives_deg": [
+          120,
+          150
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -112,13 +130,20 @@
       "type": "Retention_Clip",
       "macro_phase": 2,
       "sub_group": "LEFT_BRANCH",
-      "can_parallelize_with": ["COMP_202", "COMP_203", "COMP_204"],
+      "can_parallelize_with": [
+        "COMP_202",
+        "COMP_203",
+        "COMP_204"
+      ],
       "spatial_coordinates": {
         "x": 280,
         "y": 280,
         "projection_color_hex": "#76FF03",
         "approach_angle_default_deg": 30,
-        "approach_angle_alternatives_deg": [15, 45]
+        "approach_angle_alternatives_deg": [
+          15,
+          45
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "shoulder_elevation",
@@ -134,13 +159,20 @@
       "type": "Conduit_Channel",
       "macro_phase": 2,
       "sub_group": "CENTER_BRANCH",
-      "can_parallelize_with": ["COMP_201", "COMP_203", "COMP_204"],
+      "can_parallelize_with": [
+        "COMP_201",
+        "COMP_203",
+        "COMP_204"
+      ],
       "spatial_coordinates": {
         "x": 600,
         "y": 260,
         "projection_color_hex": "#76FF03",
         "approach_angle_default_deg": 90,
-        "approach_angle_alternatives_deg": [80, 100]
+        "approach_angle_alternatives_deg": [
+          80,
+          100
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -156,13 +188,20 @@
       "type": "Retention_Clip",
       "macro_phase": 2,
       "sub_group": "RIGHT_BRANCH",
-      "can_parallelize_with": ["COMP_201", "COMP_202", "COMP_204"],
+      "can_parallelize_with": [
+        "COMP_201",
+        "COMP_202",
+        "COMP_204"
+      ],
       "spatial_coordinates": {
         "x": 920,
         "y": 280,
         "projection_color_hex": "#76FF03",
         "approach_angle_default_deg": 150,
-        "approach_angle_alternatives_deg": [135, 165]
+        "approach_angle_alternatives_deg": [
+          135,
+          165
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "shoulder_elevation",
@@ -178,13 +217,20 @@
       "type": "Firewall_Grommet",
       "macro_phase": 2,
       "sub_group": "FIREWALL_RUN",
-      "can_parallelize_with": ["COMP_201", "COMP_202", "COMP_203"],
+      "can_parallelize_with": [
+        "COMP_201",
+        "COMP_202",
+        "COMP_203"
+      ],
       "spatial_coordinates": {
         "x": 600,
         "y": 140,
         "projection_color_hex": "#76FF03",
         "approach_angle_default_deg": 90,
-        "approach_angle_alternatives_deg": [70, 110]
+        "approach_angle_alternatives_deg": [
+          70,
+          110
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "shoulder_elevation",
@@ -200,13 +246,20 @@
       "type": "Sensor_Connector",
       "macro_phase": 3,
       "sub_group": "AUX_SENSORS",
-      "can_parallelize_with": ["COMP_302", "COMP_303", "COMP_304"],
+      "can_parallelize_with": [
+        "COMP_302",
+        "COMP_303",
+        "COMP_304"
+      ],
       "spatial_coordinates": {
         "x": 160,
         "y": 200,
         "projection_color_hex": "#FFD600",
         "approach_angle_default_deg": 25,
-        "approach_angle_alternatives_deg": [15, 40]
+        "approach_angle_alternatives_deg": [
+          15,
+          40
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_pronation",
@@ -222,13 +275,20 @@
       "type": "Lighting_Connector",
       "macro_phase": 3,
       "sub_group": "AUX_LIGHTING",
-      "can_parallelize_with": ["COMP_301", "COMP_303", "COMP_304"],
+      "can_parallelize_with": [
+        "COMP_301",
+        "COMP_303",
+        "COMP_304"
+      ],
       "spatial_coordinates": {
         "x": 120,
         "y": 380,
         "projection_color_hex": "#FFD600",
         "approach_angle_default_deg": 35,
-        "approach_angle_alternatives_deg": [20, 50]
+        "approach_angle_alternatives_deg": [
+          20,
+          50
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -244,13 +304,20 @@
       "type": "Sensor_Connector",
       "macro_phase": 3,
       "sub_group": "AUX_SENSORS",
-      "can_parallelize_with": ["COMP_301", "COMP_302", "COMP_304"],
+      "can_parallelize_with": [
+        "COMP_301",
+        "COMP_302",
+        "COMP_304"
+      ],
       "spatial_coordinates": {
         "x": 1040,
         "y": 200,
         "projection_color_hex": "#FFD600",
         "approach_angle_default_deg": 155,
-        "approach_angle_alternatives_deg": [140, 165]
+        "approach_angle_alternatives_deg": [
+          140,
+          165
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_pronation",
@@ -266,13 +333,20 @@
       "type": "Lighting_Connector",
       "macro_phase": 3,
       "sub_group": "AUX_LIGHTING",
-      "can_parallelize_with": ["COMP_301", "COMP_302", "COMP_303"],
+      "can_parallelize_with": [
+        "COMP_301",
+        "COMP_302",
+        "COMP_303"
+      ],
       "spatial_coordinates": {
         "x": 1080,
         "y": 380,
         "projection_color_hex": "#FFD600",
         "approach_angle_default_deg": 145,
-        "approach_angle_alternatives_deg": [130, 160]
+        "approach_angle_alternatives_deg": [
+          130,
+          160
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -288,13 +362,18 @@
       "type": "Taping_Zone",
       "macro_phase": 4,
       "sub_group": "FINAL_TAPING",
-      "can_parallelize_with": ["COMP_402"],
+      "can_parallelize_with": [
+        "COMP_402"
+      ],
       "spatial_coordinates": {
         "x": 600,
         "y": 350,
         "projection_color_hex": "#FF1744",
         "approach_angle_default_deg": 90,
-        "approach_angle_alternatives_deg": [85, 95]
+        "approach_angle_alternatives_deg": [
+          85,
+          95
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "wrist_flexion",
@@ -310,13 +389,18 @@
       "type": "Secondary_Lock",
       "macro_phase": 4,
       "sub_group": "FINAL_QUALITY_GATE",
-      "can_parallelize_with": ["COMP_401"],
+      "can_parallelize_with": [
+        "COMP_401"
+      ],
       "spatial_coordinates": {
         "x": 600,
         "y": 480,
         "projection_color_hex": "#FF1744",
         "approach_angle_default_deg": 90,
-        "approach_angle_alternatives_deg": [80, 100]
+        "approach_angle_alternatives_deg": [
+          80,
+          100
+        ]
       },
       "ergonomic_impact": {
         "primary_joint": "finger_pinch",
