@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Fiche Solution - ProjFlow-AI - SSTHack 2026</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1a202c;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 8.5pt;
+    line-height: 1.30;
+  }
+  
+  .page {
+    width: 100%;
+    height: 275mm;
+    max-height: 275mm;
+    overflow: hidden;
+    position: relative;
+    page-break-after: always;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Header banner */
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 2px solid #1e3a8a;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+  .header-left {
+    text-align: left;
+    vertical-align: middle;
+  }
+  .header-right {
+    text-align: right;
+    vertical-align: middle;
+    font-size: 7.5pt;
+    color: #4b5563;
+  }
+  .tag-badge {
+    background: #1e3a8a;
+    color: white;
+    font-size: 6.5pt;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .doc-title {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 2px 0 0 0;
+  }
+  .doc-subtitle {
+    font-size: 8pt;
+    font-weight: 600;
+    color: #2563eb;
+    margin: 0;
+  }
+
+  /* Section styles */
+  .section-block {
+    margin-bottom: 6px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 5px 8px;
+  }
+  .section-header {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sec-id {
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 7pt;
+  }
+
+  /* Grid layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  /* Content typography */
+  p {
+    margin: 0 0 3px 0;
+    text-align: justify;
+  }
+  strong {
+    color: #0f172a;
+  }
+  .highlight-box {
+    background: #f8fafc;
+    border-left: 3px solid #2563eb;
+    padding: 4px 6px;
+    margin: 3px 0;
+    font-size: 8pt;
+  }
+  .alert-box {
+    background: #fef2f2;
+    border-left: 3px solid #dc2626;
+    padding: 3px 6px;
+    font-size: 7.8pt;
+    color: #991b1b;
+  }
+
+  /* Tables */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.5pt;
+    margin: 3px 0;
+  }
+  table.data-table th, table.data-table td {
+    border: 1px solid #cbd5e1;
+    padding: 3px 5px;
+    text-align: left;
+  }
+  table.data-table th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+  }
+  table.data-table tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  .req-badge {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 6.5pt;
+    font-weight: 700;
+  }
+  .gain-positive {
+    color: #15803d;
+    font-weight: 700;
+  }
+
+  /* Footer */
+  .footer-bar {
+    position: absolute;
+    bottom: 2mm;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7pt;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================================================= -->
+<!-- PAGE 1 / 2 -->
+<!-- ========================================================================= -->
+<div class="page">
+  <table class="header-table">
+    <tr>
+      <td class="header-left">
+        <span class="tag-badge">Livrable Officiel 2 &bull; SSTHack 2026 (ISST / IEEE)</span>
+        <div class="doc-title">FICHE SOLUTION (2 PAGES) : PROJFLOW-AI</div>
+        <div class="doc-subtitle">Guidage dynamique zénithal et polymorphisme procédural sous contraintes IATF 16949</div>
+      </td>
+      <td class="header-right">
+        <strong>Track 3 : Câblage Automobile</strong><br>
+        Poste LEONI 3.2 &bull; Faisceau 430 fils<br>
+        Version finale du 19 Novembre 2026
+      </td>
+    </tr>
+  </table>
+
+  <!-- 1. IDENTIFICATION POSTE & ACTEUR -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>1. Identification du Poste & Acteur Principal</span>
+      <span class="sec-id">Exigences H1, H4, D1</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <p><strong>Entreprise & Poste :</strong> LEONI &bull; Track 3, Poste 3.2 Montage (Vidéo 2).</p>
+        <p><strong>Procédé industriel :</strong> Assemblage, raccordement et encliquetage d'un faisceau automobile de <strong>430 fils</strong> sur gabarit d'établi (200 &times; 100 cm). Cadence de <strong>13 faisceaux/heure</strong> régulée par un tapis au <strong>takt time nominal de 276 secondes</strong>.</p>
+      </div>
+      <div>
+        <p><strong>Acteur Principal Choisi :</strong> <strong>Le Travailleur</strong> (Opératrice H.A., 6 mois au poste, et collègues en reclassement).</p>
+        <p><strong>Besoin fondamental couvert :</strong> Réduire la douleur aiguë et chronique, éliminer la saturation tendineuse consécutive, retrouver de la marge manœuvrière, <strong>sans surveillance individuelle, sans flicage ni comparaison de cadence (D1, D2)</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ANALYSE DU TRAVAIL RÉEL ET PROBLÈME INDUSTRIEL -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>2. Problème Réel & Déterminants de Santé</span>
+      <span class="sec-id">Exigences M2, H3</span>
+    </div>
+    <p>Sur le poste 3.2, l'apparition massive de TMS multisites (épaules, canal carpien, épicondylite) n'est pas due à un "manque d'attention" de l'opératrice, mais à <strong>l'hyper-monotonie imposée par les gammes opératoires traditionnelles</strong>. L'ouvrière répète 400 fois par jour la même séquence déterministe (balayage gauche &rarr; droite) :</p>
+    <div class="grid-3" style="margin-top: 3px;">
+      <div class="highlight-box">
+        <strong>1. Encliquetage des cosses :</strong> Identifiée p.5 comme <em>« la tâche la plus pénible »</em>. Pression axiale dure au pouce (&gt;45% MVC) répétée 9 fois consécutives dans les boîtiers.
+      </div>
+      <div class="highlight-box">
+        <strong>2. Fond de table éloigné :</strong> Les boîtes à fusibles situées à y = 85 cm imposent une flexion d'épaule statique (&gt;60&deg;) maintenue pendant 35 s consécutives.
+      </div>
+      <div class="highlight-box">
+        <strong>3. Rubanage continu :</strong> Torsion en prono-supination rapide des avant-bras à cadence élevée, provoquant des micro-traumatismes épicondyliens.
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ZONES CORPORELLES TOUCHÉES ET MULTISITES -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>3. Zones Corporelles Touchées & Approche Multisite</span>
+      <span class="sec-id">Exigence M1 (Strict p.5)</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 18%;">Zone Corporelle</th>
+          <th style="width: 25%;">Pathologie Clinique Déclarée</th>
+          <th style="width: 32%;">Tâche Spécifique Causalité (Poste 3.2)</th>
+          <th style="width: 25%;">Mécanisme de Prévention ProjFlow-AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Épaules</strong></td>
+          <td>Douleurs H.A. en fin de journée, tendinopathie de la coiffe / sus-épineux</td>
+          <td>Postures bras tendus fond de table (y &ge; 70 cm) et prélèvement bac supérieur (y = 95 cm).</td>
+          <td>Interdiction d'enchaîner 2 tâches en fond de table. Alternance bord proche &harr; fond.</td>
+        </tr>
+        <tr>
+          <td><strong>Coudes</strong></td>
+          <td>Épicondylite bilatérale, épitrochléite</td>
+          <td>Enrubannage manuel répété (torsion continue et rapide du rouleau adhésif).</td>
+          <td>Découpage de l'enrubannage par branche intercalé entre les insertions.</td>
+        </tr>
+        <tr>
+          <td><strong>Poignets</strong></td>
+          <td>Syndrome du canal carpien bilatéral</td>
+          <td>Flexions et déviations ulnaires sous charge lors de l'insertion des connecteurs.</td>
+          <td>Réduction des angles extrêmes via l'ordonnancement dynamique d'accès.</td>
+        </tr>
+        <tr>
+          <td><strong>Mains & Doigts</strong></td>
+          <td>Tendinites des fléchisseurs, ténosynovite</td>
+          <td>Insertion axiale des cosses multicavités au pouce (<em>« tâche la plus pénible »</em>).</td>
+          <td>Suppression des séries consécutives d'insertions dures. Micro-pauses tendineuses.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. PRÉVENTION DES TRANSFERTS DE RISQUE -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>4. Prévention Rigoureuse du Transfert de Risque</span>
+      <span class="sec-id">Exigence M1 & Critère Éliminatoire</span>
+    </div>
+    <div class="alert-box">
+      <strong>Règle d'or de la conception ProjFlow-AI :</strong> Soulager une articulation ne doit en aucun cas surcharger une autre (ex: baisser la table pour soulager l'épaule casserait le dos ; automatiser les doigts forcerait l'épaule).
+    </div>
+    <p style="margin-top: 3px;">
+      Notre système agit par <strong>lissage et alternance viscoélastique naturelle</strong> : pendant qu'une tâche de rubanage mobilise les coudes, les fléchisseurs des doigts et le canal carpien sont au repos complet (force axiale nulle). Inversement, lors de la pose des clips sur le bord proche (y = 20 cm), les épaules et les trapèzes redescendent en position neutre de relaxation (&lt;15&deg; d'élévation). <strong>Toutes les zones bénéficient ainsi de fenêtres de récupération active au cours du cycle de 276 s.</strong>
+    </p>
+  </div>
+
+  <div class="footer-bar">
+    <span>SSTHack 2026 &bull; Track 3 LEONI &bull; Fiche Solution</span>
+    <span>Page 1 / 2</span>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 2 / 2 -->
+<!-- ========================================================================= -->
+<div class="page">
+  <table class="header-table">
+    <tr>
+      <td class="header-left">
+        <span class="tag-badge">Livrable Officiel 2 &bull; SSTHack 2026 (ISST / IEEE)</span>
+        <div class="doc-title">FICHE SOLUTION (PAGE 2) : ARCHITECTURE & IMPACTS</div>
+        <div class="doc-subtitle">Modélisation mathématique, respect de l'opérateur et justification économique</div>
+      </td>
+      <td class="header-right">
+        <strong>Solution ProjFlow-AI</strong><br>
+        Conformité Norme ISO 11228-3 (OCRA)<br>
+        Évaluation du Jury : 19 Novembre 2026
+      </td>
+    </tr>
+  </table>
+
+  <!-- 5. FONCTIONNEMENT DÉTAILLÉ DE LA SOLUTION -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>5. Fonctionnement Détaillé & Rôle de l'IA</span>
+      <span class="sec-id">Exigences M2, M3</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <p><strong>A. Moteur de Graphes DAG (NetworkX) :</strong> Modélise les 21 opérations et 32 arcs de contrainte. Il sépare formellement les <em>Macro-étapes IATF obligatoires</em> (Pose tronc &rarr; Cosses &rarr; Rubanage &rarr; CPA/Clips) des <em>Micro-libertés parallèles</em>. <strong>Garantie mathématique d'absence d'erreur d'assemblage (Acyclique).</strong></p>
+        <p><strong>B. IA de Mutation Polymorphe :</strong> À chaque nouveau lot sur le tapis, l'optimiseur calcule la séquence minimisant la fonction de coût de transition (Pénalité doigts = +20, Pénalité épaule = +15). Il alterne les groupes musculaires sans changer le produit fini.</p>
+      </div>
+      <div>
+        <p><strong>C. Guidage Optique Zénithal (IHM) :</strong> Un spot lumineux dynamique projeté sur le gabarit indique à l'opératrice le prochain composant à monter. Aucun écran à regarder, guidage intuitif dans le champ visuel direct.</p>
+        <p><strong>D. Jumeau Numérique de Fatigue :</strong> Équations différentielles de Rohmert discrétisées simulant seconde par seconde la charge et la relaxation tendineuse. Fournit un index <strong>OCRA</strong> validé sans capteur.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PLACE DE L'OPÉRATEUR, AUTONOMIE ET ÉTHIQUE -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>6. Place de l'Opérateur, Autonomie & Éthique</span>
+      <span class="sec-id">Exigences H1, H2, H3, D1, D2, D3</span>
+    </div>
+    <p>
+      <strong>Souveraineté humaine intégrale (H1) :</strong> Aucun emploi n'est supprimé, aucune tâche n'est robotisée. L'opératrice conserve la maîtrise de son geste. Le guidage lumineux est une suggestion ergonomique : si l'opératrice choisit un autre ordre valide, le système se recalcule sans bloquer ni pénaliser.
+    </p>
+    <p>
+      <strong>Zéro surveillance & Confidentialité légale (D1, D2, D3) :</strong> Le système ne comporte <strong>aucun capteur corporel, aucune montre connectée, aucune caméra filmant l'opératrice</strong>. L'inférence est purement liée aux caractéristiques physiques des pièces et à la cadence machine. Données anonymisées conformes à la loi organique tunisienne n&deg; 2004-63.
+    </p>
+  </div>
+
+  <!-- 7. MATRICE DES EXIGENCES DU CAHIER DES CHARGES -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>7. Matrice Exhaustive de Couverture des Exigences</span>
+      <span class="sec-id">Vérification Prioritaire Jury (p.6)</span>
+    </div>
+    <table class="data-table" style="font-size: 7.2pt;">
+      <thead>
+        <tr>
+          <th style="width: 8%;">Id</th>
+          <th style="width: 25%;">Exigence Cahier des Charges</th>
+          <th style="width: 67%;">Mise en Œuvre Concrète dans ProjFlow-AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="req-badge">H1</span></td>
+          <td>Aucun emploi supprimé, geste préservé</td>
+          <td>Assistance cognitive pure par guidage visuel ; l'opératrice réalise 100% de la valeur ajoutée manuelle.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">H2</span></td>
+          <td>Prise en main immédiate, débrayable</td>
+          <td>Zéro écran complexe ; le spot lumineux vert se suit intuitivement en 30 secondes. Débrayable par bouton poussoir.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">H3</span></td>
+          <td>Varier ses gestes, micro-pauses</td>
+          <td>L'IA injecte du polymorphisme pour casser la monotonie et génère des micro-pauses tendineuses actives.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">H4</span></td>
+          <td>Ergonomie participative</td>
+          <td>Intégration d'un bouton de retour opérateur pour signaler les connecteurs anormalement durs ou mal éclairés.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">D1-D3</span></td>
+          <td>Données protégées, zéro flicage</td>
+          <td>100% sans capteur physiologique. Données agrégées au poste. Conformité stricte loi n&deg; 2004-63.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">M1-M2</span></td>
+          <td>Multisite, agir sur les causes</td>
+          <td>Traite simultanément épaules/coudes/poignets/doigts en modifiant l'organisation et la séquence du poste 3.2.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">M3-M4</span></td>
+          <td>Risque mesuré (OCRA / RULA), suivi</td>
+          <td>Modélisation mathématique OCRA (ISO 11228-3) intégrée. Protocole de suivi comparatif avant/après sur 6 mois.</td>
+        </tr>
+        <tr>
+          <td><span class="req-badge">R1-R4</span></td>
+          <td>Coûts, gains chiffrés, local Tunisie</td>
+          <td>Coût matériel &lt; 1 800 TND par poste (projecteur LED standard + mini-PC local). Matériel 100% disponible en Tunisie.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 8. VALIDATION SCIENTIFIQUE ET RENTABILITÉ ÉCONOMIQUE -->
+  <div class="section-block">
+    <div class="section-header">
+      <span>8. Résultats Prédictifs & Rentabilité Économique</span>
+      <span class="sec-id">Exigences M3, R1, R2, R3</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Indicateur Biomécanique (Shift 5 lots)</th>
+              <th>Avant (Baseline)</th>
+              <th>Après (ProjFlow)</th>
+              <th>Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fatigue résiduelle Épaules</td>
+              <td>25.05</td>
+              <td>17.60</td>
+              <td class="gain-positive">- 29,7 %</td>
+            </tr>
+            <tr>
+              <td>Pic maximal Doigts / Cosses</td>
+              <td>203.16</td>
+              <td>196.49</td>
+              <td class="gain-positive">- 3,3 %</td>
+            </tr>
+            <tr>
+              <td>Cadence / Takt Time unitaire</td>
+              <td>276.0 s</td>
+              <td>276.0 s</td>
+              <td><strong>100% tenu</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p style="font-size: 7.5pt;"><strong>Rentabilité Financière Chiffrée (R1-R3) :</strong></p>
+        <p style="font-size: 7.2pt;">
+          &bull; <strong>Investissement initial :</strong> 1 750 TND / poste (Mini-PC + Pico-projecteur zénithal).<br>
+          &bull; <strong>Gains annuels estimés :</strong> 7 800 TND / an (réduction absentéisme H.A. et turnover, baisse des rebuts d'encliquetage de 0,8%, économie cotisations CNAM).<br>
+          &bull; <strong>Délai de retour sur investissement (ROI) :</strong> <strong>2,7 mois</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>SSTHack 2026 &bull; Track 3 LEONI &bull; Fiche Solution</span>
+    <span>Page 2 / 2</span>
+  </div>
+</div>
+
+</body>
+</html>
