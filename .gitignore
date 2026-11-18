@@ -4,10 +4,17 @@ __pycache__/
 *$py.class
 
 # Environments
+.env
 .venv/
 venv/
 ENV/
 env/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Scratch & temporary dumps
 scratch/
