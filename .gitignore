@@ -16,7 +16,10 @@ env/
 *.swp
 *.swo
 
-# Scratch & temporary dumps
+# Temporary and local deliverables
+conversation_full*
+fiche_solution*
+*.pdf
 scratch/
 *.html
 *.log

@@ -55,16 +55,6 @@ ISSTHACK/
 
 ---
 
-## 📊 Résultats & Gains Ergonomiques (Shift 5 Cycles)
-
-Simulation d'un poste de travail continu de 23 minutes (5 cycles consécutifs) :
-
-* **Épaules :** **-29,7 % de fatigue résiduelle** en fin de shift grâce à la suppression des postures prolongées en fond de table ($y \ge 70\text{ cm}$).
-* **Mains & Doigts :** **-3,3 % sur le pic d'effort maximal** en espaçant les insertions de cosses dures.
-* **Takt Time :** **0 retard**, maintien strict des **276.0 s par cycle**.
-
----
-
 ## 🚀 Installation & Exécution Rapide
 
 ### Prérequis
