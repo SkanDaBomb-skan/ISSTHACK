@@ -1,0 +1,330 @@
+{
+  "post_metadata": {
+    "station_id": "LEONI_POST_3.2",
+    "station_name": "Poste de Montage & Faisceautage Principal",
+    "standard_takt_time_sec": 276,
+    "quality_standard": "IATF 16949",
+    "bench_dimensions_mm": {
+      "width": 1200,
+      "height": 800
+    },
+    "operator_position": {
+      "x": 600,
+      "y": 800
+    }
+  },
+  "macro_phases": [
+    {
+      "phase_id": 1,
+      "phase_name": "Phase 1 : Encliquetage Tronc Central (IATF Strict)",
+      "description": "Verrouillage des gros connecteurs centraux et points de masse primaires. Ordre inter-phase non modifiable.",
+      "strict_order": true
+    },
+    {
+      "phase_id": 2,
+      "phase_name": "Phase 2 : Routage Dérivations & Passages de Câbles",
+      "description": "Pose des clips intermédiaires et guidage dans les goulottes latérales.",
+      "strict_order": true
+    },
+    {
+      "phase_id": 3,
+      "phase_name": "Phase 3 : Insertion Connecteurs Auxiliaires & Capteurs",
+      "description": "Fichages des connecteurs secondaires, modules ABS et capteurs de portières.",
+      "strict_order": true
+    },
+    {
+      "phase_id": 4,
+      "phase_name": "Phase 4 : Frettage & Verrouillage Final Quality Gate",
+      "description": "Pose du ruban adhésif textile et contrôle visuel de continuité.",
+      "strict_order": true
+    }
+  ],
+  "components": [
+    {
+      "component_id": "COMP_101",
+      "name": "Connecteur Principal ECU (Calculateur)",
+      "type": "Heavy_Connector",
+      "macro_phase": 1,
+      "sub_group": "CENTRAL_CORE",
+      "can_parallelize_with": ["COMP_102", "COMP_103"],
+      "spatial_coordinates": {
+        "x": 600,
+        "y": 420,
+        "projection_color_hex": "#00E5FF",
+        "approach_angle_default_deg": 90,
+        "approach_angle_alternatives_deg": [75, 105]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "shoulder_elevation",
+        "strain_factor": 2.2,
+        "force_newton": 35.0,
+        "nominal_duration_sec": 14.0
+      }
+    },
+    {
+      "component_id": "COMP_102",
+      "name": "Bornier de Masse Principale M6",
+      "type": "Ground_Lug",
+      "macro_phase": 1,
+      "sub_group": "CENTRAL_CORE",
+      "can_parallelize_with": ["COMP_101", "COMP_103"],
+      "spatial_coordinates": {
+        "x": 510,
+        "y": 450,
+        "projection_color_hex": "#00E5FF",
+        "approach_angle_default_deg": 45,
+        "approach_angle_alternatives_deg": [30, 60]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_pronation",
+        "secondary_joint": "elbow_extension",
+        "strain_factor": 1.8,
+        "force_newton": 28.0,
+        "nominal_duration_sec": 11.5
+      }
+    },
+    {
+      "component_id": "COMP_103",
+      "name": "Boîte à Fusibles Compartiment Moteur",
+      "type": "Fuse_Box_Bridge",
+      "macro_phase": 1,
+      "sub_group": "CENTRAL_CORE",
+      "can_parallelize_with": ["COMP_101", "COMP_102"],
+      "spatial_coordinates": {
+        "x": 690,
+        "y": 450,
+        "projection_color_hex": "#00E5FF",
+        "approach_angle_default_deg": 135,
+        "approach_angle_alternatives_deg": [120, 150]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "shoulder_elevation",
+        "strain_factor": 2.0,
+        "force_newton": 32.0,
+        "nominal_duration_sec": 13.0
+      }
+    },
+    {
+      "component_id": "COMP_201",
+      "name": "Clip de Routage Aile Gauche (3x)",
+      "type": "Retention_Clip",
+      "macro_phase": 2,
+      "sub_group": "LEFT_BRANCH",
+      "can_parallelize_with": ["COMP_202", "COMP_203", "COMP_204"],
+      "spatial_coordinates": {
+        "x": 280,
+        "y": 280,
+        "projection_color_hex": "#76FF03",
+        "approach_angle_default_deg": 30,
+        "approach_angle_alternatives_deg": [15, 45]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "shoulder_elevation",
+        "secondary_joint": "elbow_extension",
+        "strain_factor": 1.4,
+        "force_newton": 18.0,
+        "nominal_duration_sec": 18.0
+      }
+    },
+    {
+      "component_id": "COMP_202",
+      "name": "Goulotte de Dérivation Centrale",
+      "type": "Conduit_Channel",
+      "macro_phase": 2,
+      "sub_group": "CENTER_BRANCH",
+      "can_parallelize_with": ["COMP_201", "COMP_203", "COMP_204"],
+      "spatial_coordinates": {
+        "x": 600,
+        "y": 260,
+        "projection_color_hex": "#76FF03",
+        "approach_angle_default_deg": 90,
+        "approach_angle_alternatives_deg": [80, 100]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "wrist_pronation",
+        "strain_factor": 1.1,
+        "force_newton": 14.0,
+        "nominal_duration_sec": 15.0
+      }
+    },
+    {
+      "component_id": "COMP_203",
+      "name": "Clip de Routage Aile Droite (3x)",
+      "type": "Retention_Clip",
+      "macro_phase": 2,
+      "sub_group": "RIGHT_BRANCH",
+      "can_parallelize_with": ["COMP_201", "COMP_202", "COMP_204"],
+      "spatial_coordinates": {
+        "x": 920,
+        "y": 280,
+        "projection_color_hex": "#76FF03",
+        "approach_angle_default_deg": 150,
+        "approach_angle_alternatives_deg": [135, 165]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "shoulder_elevation",
+        "secondary_joint": "elbow_extension",
+        "strain_factor": 1.5,
+        "force_newton": 18.0,
+        "nominal_duration_sec": 18.0
+      }
+    },
+    {
+      "component_id": "COMP_204",
+      "name": "Pont de Câblage Tablier Avant",
+      "type": "Firewall_Grommet",
+      "macro_phase": 2,
+      "sub_group": "FIREWALL_RUN",
+      "can_parallelize_with": ["COMP_201", "COMP_202", "COMP_203"],
+      "spatial_coordinates": {
+        "x": 600,
+        "y": 140,
+        "projection_color_hex": "#76FF03",
+        "approach_angle_default_deg": 90,
+        "approach_angle_alternatives_deg": [70, 110]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "shoulder_elevation",
+        "secondary_joint": "lumbar_bending",
+        "strain_factor": 2.1,
+        "force_newton": 25.0,
+        "nominal_duration_sec": 22.0
+      }
+    },
+    {
+      "component_id": "COMP_301",
+      "name": "Capteur ABS Avant Gauche",
+      "type": "Sensor_Connector",
+      "macro_phase": 3,
+      "sub_group": "AUX_SENSORS",
+      "can_parallelize_with": ["COMP_302", "COMP_303", "COMP_304"],
+      "spatial_coordinates": {
+        "x": 160,
+        "y": 200,
+        "projection_color_hex": "#FFD600",
+        "approach_angle_default_deg": 25,
+        "approach_angle_alternatives_deg": [15, 40]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_pronation",
+        "secondary_joint": "shoulder_elevation",
+        "strain_factor": 1.6,
+        "force_newton": 16.0,
+        "nominal_duration_sec": 12.0
+      }
+    },
+    {
+      "component_id": "COMP_302",
+      "name": "Fiche Optique Phare Gauche",
+      "type": "Lighting_Connector",
+      "macro_phase": 3,
+      "sub_group": "AUX_LIGHTING",
+      "can_parallelize_with": ["COMP_301", "COMP_303", "COMP_304"],
+      "spatial_coordinates": {
+        "x": 120,
+        "y": 380,
+        "projection_color_hex": "#FFD600",
+        "approach_angle_default_deg": 35,
+        "approach_angle_alternatives_deg": [20, 50]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "elbow_extension",
+        "strain_factor": 1.3,
+        "force_newton": 15.0,
+        "nominal_duration_sec": 10.0
+      }
+    },
+    {
+      "component_id": "COMP_303",
+      "name": "Capteur ABS Avant Droit",
+      "type": "Sensor_Connector",
+      "macro_phase": 3,
+      "sub_group": "AUX_SENSORS",
+      "can_parallelize_with": ["COMP_301", "COMP_302", "COMP_304"],
+      "spatial_coordinates": {
+        "x": 1040,
+        "y": 200,
+        "projection_color_hex": "#FFD600",
+        "approach_angle_default_deg": 155,
+        "approach_angle_alternatives_deg": [140, 165]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_pronation",
+        "secondary_joint": "shoulder_elevation",
+        "strain_factor": 1.7,
+        "force_newton": 16.0,
+        "nominal_duration_sec": 12.0
+      }
+    },
+    {
+      "component_id": "COMP_304",
+      "name": "Fiche Optique Phare Droit",
+      "type": "Lighting_Connector",
+      "macro_phase": 3,
+      "sub_group": "AUX_LIGHTING",
+      "can_parallelize_with": ["COMP_301", "COMP_302", "COMP_303"],
+      "spatial_coordinates": {
+        "x": 1080,
+        "y": 380,
+        "projection_color_hex": "#FFD600",
+        "approach_angle_default_deg": 145,
+        "approach_angle_alternatives_deg": [130, 160]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "elbow_extension",
+        "strain_factor": 1.3,
+        "force_newton": 15.0,
+        "nominal_duration_sec": 10.5
+      }
+    },
+    {
+      "component_id": "COMP_401",
+      "name": "Frettage Ruban Adhésif - Zone Centrale",
+      "type": "Taping_Zone",
+      "macro_phase": 4,
+      "sub_group": "FINAL_TAPING",
+      "can_parallelize_with": ["COMP_402"],
+      "spatial_coordinates": {
+        "x": 600,
+        "y": 350,
+        "projection_color_hex": "#FF1744",
+        "approach_angle_default_deg": 90,
+        "approach_angle_alternatives_deg": [85, 95]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "wrist_flexion",
+        "secondary_joint": "wrist_pronation",
+        "strain_factor": 1.9,
+        "force_newton": 22.0,
+        "nominal_duration_sec": 24.0
+      }
+    },
+    {
+      "component_id": "COMP_402",
+      "name": "Insertion Verrous Secondaires CPA (Control Pin Assurance)",
+      "type": "Secondary_Lock",
+      "macro_phase": 4,
+      "sub_group": "FINAL_QUALITY_GATE",
+      "can_parallelize_with": ["COMP_401"],
+      "spatial_coordinates": {
+        "x": 600,
+        "y": 480,
+        "projection_color_hex": "#FF1744",
+        "approach_angle_default_deg": 90,
+        "approach_angle_alternatives_deg": [80, 100]
+      },
+      "ergonomic_impact": {
+        "primary_joint": "finger_pinch",
+        "secondary_joint": "wrist_flexion",
+        "strain_factor": 1.5,
+        "force_newton": 20.0,
+        "nominal_duration_sec": 18.0
+      }
+    }
+  ]
+}

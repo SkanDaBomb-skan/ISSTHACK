@@ -1,0 +1,94 @@
+{
+  "simulation_suite_metadata": {
+    "project": "ProjFlow-AI",
+    "version": "1.0.0",
+    "target_station": "LEONI_POST_3.2",
+    "description": "Scénarios de production simulés pour la démonstration de l'IA (saturation tendineuse vs rééquilibrage spatial sous contrainte IATF 16949)"
+  },
+  "batches": [
+    {
+      "batch_id": "BATCH_001_MORNING_BASELINE",
+      "name": "Lot 1 : Démarrage Équipe Matin (Baseline)",
+      "target_harness_model": "VW_GOLF_FRONT_HARNESS_V3",
+      "quantity_units": 15,
+      "takt_target_sec": 276,
+      "operator_initial_fatigue": {
+        "wrist_flexion_fatigue_pct": 5.0,
+        "wrist_pronation_fatigue_pct": 4.0,
+        "shoulder_elevation_fatigue_pct": 3.0,
+        "elbow_extension_fatigue_pct": 2.0
+      },
+      "active_components": [
+        "COMP_101", "COMP_102", "COMP_103",
+        "COMP_201", "COMP_202", "COMP_203", "COMP_204",
+        "COMP_301", "COMP_302", "COMP_303", "COMP_304",
+        "COMP_401", "COMP_402"
+      ],
+      "baseline_execution_sequence": [
+        "COMP_101", "COMP_102", "COMP_103",
+        "COMP_201", "COMP_202", "COMP_203", "COMP_204",
+        "COMP_301", "COMP_302", "COMP_303", "COMP_304",
+        "COMP_401", "COMP_402"
+      ],
+      "description": "Opérateur reposé. La séquence standard est exécutée sans besoin immédiat de mutation spatiale."
+    },
+    {
+      "batch_id": "BATCH_002_PEAK_SATURATION",
+      "name": "Lot 2 : Répétitivité Élevée & Saturation Tendineuse Critique",
+      "target_harness_model": "VW_GOLF_FRONT_HARNESS_V3_HEAVY_OPTION",
+      "quantity_units": 20,
+      "takt_target_sec": 276,
+      "operator_initial_fatigue": {
+        "wrist_flexion_fatigue_pct": 74.0,
+        "wrist_pronation_fatigue_pct": 68.0,
+        "shoulder_elevation_fatigue_pct": 58.0,
+        "elbow_extension_fatigue_pct": 42.0
+      },
+      "active_components": [
+        "COMP_101", "COMP_102", "COMP_103",
+        "COMP_201", "COMP_202", "COMP_203", "COMP_204",
+        "COMP_301", "COMP_302", "COMP_303", "COMP_304",
+        "COMP_401", "COMP_402"
+      ],
+      "baseline_execution_sequence": [
+        "COMP_101", "COMP_102", "COMP_103",
+        "COMP_201", "COMP_202", "COMP_203", "COMP_204",
+        "COMP_301", "COMP_302", "COMP_303", "COMP_304",
+        "COMP_401", "COMP_402"
+      ],
+      "description": "Seuil critique atteint (poignet > 70%). C'est le moment charnière où l'IA déclenche le polymorphisme spatial pour le lot suivant."
+    },
+    {
+      "batch_id": "BATCH_003_AI_OPTIMIZED_RECOVERY",
+      "name": "Lot 3 : Intervention IA - Polymorphisme Spatial Sous Protocole",
+      "target_harness_model": "VW_GOLF_FRONT_HARNESS_V3_AI_MUTATED",
+      "quantity_units": 15,
+      "takt_target_sec": 276,
+      "operator_initial_fatigue": {
+        "wrist_flexion_fatigue_pct": 78.5,
+        "wrist_pronation_fatigue_pct": 71.0,
+        "shoulder_elevation_fatigue_pct": 60.0,
+        "elbow_extension_fatigue_pct": 45.0
+      },
+      "active_components": [
+        "COMP_101", "COMP_102", "COMP_103",
+        "COMP_201", "COMP_202", "COMP_203", "COMP_204",
+        "COMP_301", "COMP_302", "COMP_303", "COMP_304",
+        "COMP_401", "COMP_402"
+      ],
+      "ai_mutated_sequence": [
+        "COMP_102", "COMP_103", "COMP_101",
+        "COMP_203", "COMP_202", "COMP_201", "COMP_204",
+        "COMP_304", "COMP_303", "COMP_302", "COMP_301",
+        "COMP_402", "COMP_401"
+      ],
+      "spatial_angle_adjustments_deg": {
+        "COMP_101": 75,
+        "COMP_102": 30,
+        "COMP_203": 135,
+        "COMP_304": 130
+      },
+      "description": "L'IA réorganise les micro-libertés (droite/gauche alternés, angles inclinés) pour soulager les tendons du poignet tout en respectant strictement l'ordre des 4 macro-phases IATF."
+    }
+  ]
+}
