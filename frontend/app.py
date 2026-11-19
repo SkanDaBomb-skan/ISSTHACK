@@ -107,8 +107,6 @@ with st.sidebar:
         ss.last_tick = time.monotonic()
     if c2.button("↺ Relancer", width="stretch"):
         safe(sess.reset, "Relance")
-    if st.button("⚡ Déclencher une mutation", width="stretch", disabled=not ai):
-        safe(lambda: sess.trigger_mutation("Demande manuelle depuis l'IHM", kind="manuel"), "Mutation")
 
 
 @st.fragment(run_every=0.5)

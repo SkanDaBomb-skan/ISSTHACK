@@ -3,8 +3,7 @@ frontend/session.py - Machine d'état du simulateur de projecteur (Membre 2).
 
 Fait avancer le cycle, suit la fatigue (jumeau du Membre 1) et déclenche les mutations :
   1. auto     : un pic de fatigue est prévu au-dessus du seuil dans les 30 s à venir ;
-  2. manuel   : bouton de l'IHM ;
-  3. mode     : passage au mode ProjFlow-AI (et retour au protocole fixe, immédiat lui aussi).
+  2. mode     : passage au mode ProjFlow-AI (et retour au protocole fixe, immédiat lui aussi).
 Une mutation réordonne les étapes restantes (DAG respecté) et fait tourner les angles
 d'approche de 15 à 30°, sans toucher au protocole (mêmes tâches, cibles et précédences).
 """
@@ -158,7 +157,7 @@ class ProjectorSession:
             label = dict(self.src.joints)[joint]
             self.trigger_mutation(f"Pic prévu {label} {v:.0f} % ≥ seuil {self.threshold_pct:.0f} % (fenêtre {LOOKAHEAD_SEC:.0f} s)", kind="auto")
 
-    def trigger_mutation(self, reason: str, kind: str = "manuel", seed: Optional[int] = None) -> Optional[dict]:
+    def trigger_mutation(self, reason: str, kind: str = "auto", seed: Optional[int] = None) -> Optional[dict]:
         i = self.index()
         current = self.order[i]
         done = self.order[:i]

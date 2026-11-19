@@ -362,8 +362,10 @@ for (const r of SH.rows) {
     b.innerHTML = `<div style="width:${(v / max) * 100}%"></div><span></span>`;
     b.querySelector("span").textContent = `${name} : ${Math.round(v)} %`; bars.appendChild(b);
   }
-  const g = document.createElement("div"); g.className = "gain " + (r.gain > 1 ? "good" : r.gain < -1 ? "bad" : "flat");
-  g.textContent = r.gain > 1 ? `−${Math.round(r.gain)} %` : r.gain < -1 ? `+${Math.round(-r.gain)} %` : "≈";
+  // gain > 0 = less fatigue with ProjFlow-AI. Always show the figure; neutral colour below 2 %.
+  const g = document.createElement("div"); g.className = "gain " + (r.gain >= 2 ? "good" : r.gain <= -2 ? "bad" : "flat");
+  const mag = Math.abs(r.gain), shown = mag < 10 ? mag.toFixed(1).replace(".", ",") : String(Math.round(mag));
+  g.textContent = mag < 0.05 ? "0 %" : `${r.gain > 0 ? "−" : "+"}${shown} %`;
   g.title = r.peakGain == null ? "" : `pic : ${r.peakGain > 0 ? "−" : "+"}${Math.abs(r.peakGain)} %`;
   $("shift-grid").append(lab, bars, g);
 }

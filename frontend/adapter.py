@@ -164,7 +164,9 @@ class Member1Source:
                 chosen = available[0]
             else:
                 scored = sorted(((self.optimizer._compute_transition_cost(last, c, completed), i, c) for i, c in enumerate(available)), key=lambda s: (s[0], s[1]))
-                chosen = rng.choice([s[2] for s in scored[:2]])
+                # same selection rule as generate_ergonomic_sequence: only candidates within +3.0 of the best cost
+                best = [s[2] for s in scored if s[0] <= scored[0][0] + 3.0]
+                chosen = rng.choice(best[:2])
             out.append(chosen.id)
             completed.add(chosen.id)
             last = chosen

@@ -34,7 +34,7 @@ python -m frontend.test_frontend       # tests
   (protocole répété 5 fois vs 5 lots polymorphes), fatigue résiduelle en fin de shift.
 - **Barre latérale** : mode « Protocole fixe standard (fatigue élevée) » / « ProjFlow-AI · nudge
   subconscient (protégé) », bascule immédiate ; bouton « Simuler le lot suivant » (termine le lot dans le
-  jumeau de fatigue et lance un nouvel ordre polymorphe) ; mutation manuelle ; vitesse ; pause.
+  jumeau de fatigue et lance un nouvel ordre polymorphe) ; vitesse ; pause.
 
 ## Sources de données
 
@@ -51,7 +51,8 @@ Le code des Membres 1 et 3 n'est pas modifié, seulement importé (`frontend/ada
 
 1. **Auto** : le jumeau de fatigue prévoit, dans les 30 s, une articulation au-dessus du seuil
    (M1 : % du pic atteint par le protocole fixe ; M3 : % de fatigue du lot).
-2. **Manuel** : bouton « Déclencher une mutation ».
+2. **Mode** : passage au mode ProjFlow-AI dans la barre latérale (le retour au protocole fixe est immédiat aussi).
+3. **Nouveau lot** : en mode ProjFlow-AI, chaque lot démarre directement dans une séquence polymorphe.
 
 ## Conventions
 
