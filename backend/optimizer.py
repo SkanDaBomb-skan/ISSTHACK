@@ -40,9 +40,12 @@ class AssemblySequenceOptimizer:
         
         Principe algorithmique :
           1. À chaque étape, interroger le DAG pour obtenir le pool des tâches légalement autorisées.
-          2. Calculer un coût de transition biomécanique pour chaque tâche candidate.
-          3. Privilégier la tâche qui offre un repos actif à l'articulation la plus sollicitée par l'étape précédente.
-          4. Valider formellement la séquence finale via le contrôleur de précédence.
+          2. Calculer un coût de transition biomécanique pour chaque tâche candidate en intégrant :
+             - La règle maîtresse IATF 16949 : la phase M4 (CPA et clips) ne démarre que quand tout le rubanage M3 est achevé.
+             - Le repos actif intercalé : dès qu'une branche est insérée, le rubanage M3 est favorisé pour reposer les doigts.
+             - Les pénalités d'accumulation consécutive sur une même articulation (épaules, coudes, poignets, doigts).
+             - Le bonus spatial de mobilité posturale.
+          3. Valider formellement la séquence finale via le contrôleur de précédence du DAG.
         """
         rng = random.Random(seed)
         completed_ids: Set[str] = set()
@@ -63,22 +66,23 @@ class AssemblySequenceOptimizer:
                 # Évaluer le coût de transition ergonomique pour chaque candidat
                 scored_candidates: List[Tuple[float, AssemblyTask]] = []
                 for cand in available:
-                    cost = self._compute_transition_cost(last_task, cand)
+                    cost = self._compute_transition_cost(last_task, cand, completed_ids)
                     scored_candidates.append((cost, cand))
 
                 # Trier par coût croissant (le plus petit coût = le meilleur choix ergonomique)
                 scored_candidates.sort(key=lambda item: item[0])
 
-                # Pour maintenir une légère variabilité motrice saine d'un lot à l'autre,
-                # on choisit parmi les 2 meilleures options
-                best_pool = [item[1] for item in scored_candidates[:2]]
-                chosen = rng.choice(best_pool)
+                # Pour maintenir une variabilité motrice saine d'un lot à l'autre sans dégrader l'ergonomie,
+                # on choisit parmi les 2 meilleures options dans un intervalle serré
+                min_cost = scored_candidates[0][0]
+                best_pool = [item[1] for item in scored_candidates if item[0] <= min_cost + 3.0]
+                chosen = rng.choice(best_pool[:2])
 
             sequence.append(chosen)
             completed_ids.add(chosen.id)
             last_task = chosen
 
-        # 3. Contrôle de sécurité qualité absolu
+        # 3. Contrôle de sécurité qualité absolu (IATF 16949)
         is_valid, msg = self.engine.validate_sequence([t.id for t in sequence])
         if not is_valid:
             raise ValueError(f"Erreur interne d'optimisation : {msg}")
@@ -88,35 +92,59 @@ class AssemblySequenceOptimizer:
     def _compute_transition_cost(
         self,
         prev: Optional[AssemblyTask],
-        cand: AssemblyTask
+        cand: AssemblyTask,
+        completed_ids: Set[str]
     ) -> float:
         """
-        Fonction de coût biomécanique évaluant la pénibilité de passer de 'prev' à 'cand'.
-        Pénalise sévèrement l'accumulation continue sur un même tendon.
+        Fonction de coût biomécanique multi-articulaire & contraintes IATF :
+        Évalue la pertinence de passer de 'prev' à 'cand'.
         """
-        if prev is None:
-            return 0.0
-
         cost = 0.0
 
-        # Règle 1 : Prévention Canal Carpien & Doigts (Insertion dure de cosses)
-        # Si la tâche précédente a écrasé les doigts (strain >= 8.0) et que la candidate aussi
-        if prev.strain.hands_fingers >= 8.0 and cand.strain.hands_fingers >= 8.0:
-            cost += 20.0  # Très lourde pénalité : interdire 2 insertions dures consécutives !
+        # Règle 0 : Qualité IATF 16949 & Cooldown Physiologique Final (Évite tout transfert de risque vers les coudes)
+        # La phase M4 (sécurité CPA et clips carrosserie) ne doit JAMAIS démarrer tant que tout le rubanage M3 n'est pas terminé.
+        if cand.id.startswith("M4"):
+            pending_m3 = any(tid.startswith("M3") and tid not in completed_ids for tid in self.tasks_dict)
+            if pending_m3:
+                return 50000.0  # Verrouillage strict : interdiction de clipser avant d'avoir rubanné !
+            if cand.id == "M4_CPA_FUSE":
+                cost -= 20.0  # Prioriser le connecteur fusible en début de M4 pour laisser les épaules récupérer ensuite
 
-        # Règle 2 : Prévention Épaules / Coiffe des rotateurs (Fond de table)
-        # Posture bras tendu en fond de table (y > 70 cm)
+        # Règle 1 : Repos Actif Intercalé pour les Doigts (Canal carpien)
+        # Dès qu'un nœud d'enrubannage M3 est libéré, l'intercaler offre un répit aux doigts (hf <= 4.5)
+        # et brise la chaîne d'écrasement continu des 9 connecteurs M2.
+        if cand.id.startswith("M3") and cand.id != "M3_TAPE_PROTECT_TRUNK":
+            if prev and prev.strain.hands_fingers >= 8.0:
+                cost -= 25.0  # Bonus de repos actif immédiat
+
+        if prev is None:
+            return cost
+
+        # Règle 2 : Prévention Épaules / Coiffe des rotateurs (Douleurs H.A.)
+        # Pénalise l'enchaînement de tâches à forte tension d'épaule ou en fond de gabarit (y >= 70 cm)
+        if prev.strain.shoulders >= 6.5 and cand.strain.shoulders >= 6.5:
+            cost += 35.0
         if prev.coords.y >= 70.0 and cand.coords.y >= 70.0:
-            cost += 15.0  # Pénalité : éviter de maintenir les bras tendus en fond de table
+            cost += 25.0
 
-        # Règle 3 : Prévention Épicondylite (Torsion coude lors du rubanage)
+        # Règle 3 : Prévention Canal Carpien & Pression Axiale des Doigts
+        # Interdire 2 insertions dures consécutives au pouce (strain >= 8.5)
+        if prev.strain.hands_fingers >= 8.5 and cand.strain.hands_fingers >= 8.5:
+            cost += 30.0
+
+        # Règle 4 : Prévention Épicondylite (Torsion coude lors du rubanage)
+        # Interdire 2 rubanages consécutifs pour éviter la surchauffe tendineuse du coude
         if prev.strain.elbows >= 7.5 and cand.strain.elbows >= 7.5:
-            cost += 12.0  # Pénalité : alterner les phases de rubanage
+            cost += 35.0
 
-        # Règle 4 : Bonus d'alternance motrice (Hémisphères de table)
-        # Si l'opérateur change de zone spatiale (|delta_x| > 40 cm), son buste change d'angle
-        spatial_shift = abs(prev.coords.x - cand.coords.x)
-        if spatial_shift >= 40.0:
-            cost -= 3.0  # Bonus ergonomique : favorise la mobilité dynamique
+        # Règle 5 : Prévention Poignets (Flexions / Déviations extrêmes)
+        if prev.strain.wrists >= 8.5 and cand.strain.wrists >= 8.5:
+            cost += 20.0
+
+        # Règle 6 : Mobilité posturale dynamique (Alternance spatiale gauche / centre / droite)
+        # Quand l'opératrice change de zone sur le gabarit (|delta_x| >= 45 cm), son buste change d'angle
+        dx = abs(prev.coords.x - cand.coords.x)
+        if dx >= 45.0:
+            cost -= 8.0
 
         return cost
