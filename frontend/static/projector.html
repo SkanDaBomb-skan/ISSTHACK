@@ -127,6 +127,22 @@
   .gain { justify-self: end; padding: 3px 7px; border: 1.5px solid #28252c; border-radius: 9px; font-size: 9px; font-weight: 800; }
   .gain.good { background: #c9ecdf; color: #0f5e3e; } .gain.bad { background: #fbd0cf; color: #9b1c1c; } .gain.flat { background: #ece6d2; color: #4b4750; }
   .shift-foot { margin-top: 9px; font-size: 8px; color: #6d6770; }
+  .shift-tabs { display: flex; gap: 8px; margin: 8px 0 10px; }
+  .tab-pill { padding: 4px 11px; border: 1.5px solid #28252c; border-radius: 999px; background: #e6e0cc;
+              font-size: 8.5px; font-weight: 700; color: #28252c; cursor: pointer; transition: all 0.15s ease; }
+  .tab-pill:hover { background: #fdfaf0; transform: translateY(-1px); }
+  .tab-pill.active { background: #f0df54; box-shadow: 2px 2px 0 #28252c; }
+  .day-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+  .kpi-box { padding: 7px 9px; border: 1.5px solid #28252c; border-radius: 10px; background: #fffdf5; box-shadow: 2px 2px 0 #28252c; }
+  .kpi-val { display: block; font-size: 13px; font-weight: 800; color: #0f5e3e; line-height: 1.1; }
+  .kpi-lbl { display: block; font-size: 8px; font-weight: 700; color: #28252c; margin-top: 2px; }
+  .kpi-sub { display: block; font-size: 7px; color: #6d6770; margin-top: 1px; }
+  .hourly-strip { margin-top: 8px; padding: 6px 8px; border: 1.5px solid #28252c; border-radius: 8px; background: #fbf8ec; }
+  .hourly-strip-title { font-size: 8px; font-weight: 800; color: #28252c; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .hourly-chips { display: flex; gap: 4px; justify-content: space-between; }
+  .h-chip { flex: 1; text-align: center; padding: 3px 1px; border-radius: 4px; border: 1px solid #c9c2af; font-size: 7.5px; background: #fff; }
+  .h-chip strong { display: block; font-size: 8.5px; color: #0f5e3e; }
+  .h-chip span { display: block; font-size: 6.5px; color: #6d6770; }
   .protocol { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border: 2px solid #28252c; border-radius: 16px;
               background: #f0df54; box-shadow: 6px 6px 0 #ed59b8, 9px 9px 0 #28252c; }
   .shield { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; background: #188f83; color: #f7f2e2;
@@ -190,7 +206,12 @@
 
       <div class="shift-card">
         <div class="shift-head"><strong>AVANT / APRÈS · PROTOCOLE FIXE vs PROJFLOW-AI</strong><span id="shift-title"></span></div>
+        <div class="shift-tabs">
+          <button id="tab-demo" class="tab-pill active" type="button" onclick="window.setShiftMode('demo')">Vue Démo (5 lots · 23 min)</button>
+          <button id="tab-full" class="tab-pill" type="button" onclick="window.setShiftMode('full')">Journée Complète (104 lots · 8h)</button>
+        </div>
         <div class="shift-grid" id="shift-grid"></div>
+        <div id="shift-extra"></div>
         <div class="shift-foot" id="shift-foot"></div>
       </div>
     </section>
@@ -352,24 +373,92 @@ $("lock-title").textContent = compliant ? "IATF 16949 · Protocole verrouillé :
 $("lock-sub").textContent = (I.edges ? `${I.edgesOk}/${I.edges} règles de précédence · ` : "Macro-phases dans l'ordre · ")
   + (I.locked ? `${I.lockedOk}/${I.locked} positions verrouillées · ` : "") + (I.fp === I.ref ? `empreinte ${I.fp} identique` : "empreinte modifiée")
   + (I.ok ? "" : ` · ${I.msg}`);
-const SH = D.shift; $("shift-title").textContent = SH.title;
-for (const r of SH.rows) {
-  const max = Math.max(r.before, r.after, 1);
-  const lab = document.createElement("div"); lab.className = "lab"; lab.textContent = r.label;
-  const bars = document.createElement("div"); bars.className = "bars";
-  for (const [cls, v, name] of [["before", r.before, "Protocole fixe"], ["after", r.after, "ProjFlow-AI"]]) {
-    const b = document.createElement("div"); b.className = "bar " + cls;
-    b.innerHTML = `<div style="width:${(v / max) * 100}%"></div><span></span>`;
-    b.querySelector("span").textContent = `${name} : ${Math.round(v)} %`; bars.appendChild(b);
+window.currentHorizon = window.currentHorizon || "demo";
+function renderShiftCard(mode) {
+  window.currentHorizon = mode;
+  const isFull = mode === "full" && D.full_day;
+  const SH = isFull ? D.full_day : D.shift;
+
+  const tabDemo = $("tab-demo");
+  const tabFull = $("tab-full");
+  if (tabDemo && tabFull) {
+    tabDemo.className = "tab-pill" + (!isFull ? " active" : "");
+    tabFull.className = "tab-pill" + (isFull ? " active" : "");
   }
-  // gain > 0 = less fatigue with ProjFlow-AI. Always show the figure; neutral colour below 2 %.
-  const g = document.createElement("div"); g.className = "gain " + (r.gain >= 2 ? "good" : r.gain <= -2 ? "bad" : "flat");
-  const mag = Math.abs(r.gain), shown = mag < 10 ? mag.toFixed(1).replace(".", ",") : String(Math.round(mag));
-  g.textContent = mag < 0.05 ? "0 %" : `${r.gain > 0 ? "−" : "+"}${shown} %`;
-  g.title = r.peakGain == null ? "" : `pic : ${r.peakGain > 0 ? "−" : "+"}${Math.abs(r.peakGain)} %`;
-  $("shift-grid").append(lab, bars, g);
+  $("shift-title").textContent = SH.title;
+  const grid = $("shift-grid");
+  grid.innerHTML = "";
+  for (const r of SH.rows) {
+    const max = Math.max(r.before, r.after, 1);
+    const lab = document.createElement("div"); lab.className = "lab"; lab.textContent = r.label;
+    const bars = document.createElement("div"); bars.className = "bars";
+    for (const [cls, v, name] of [["before", r.before, "Protocole fixe"], ["after", r.after, "ProjFlow-AI"]]) {
+      const b = document.createElement("div"); b.className = "bar " + cls;
+      b.innerHTML = `<div style="width:${(v / max) * 100}%"></div><span></span>`;
+      b.querySelector("span").textContent = `${name} : ${Math.round(v)} %`; bars.appendChild(b);
+    }
+    // gain > 0 = less fatigue with ProjFlow-AI. Always show the figure; neutral colour below 2 %.
+    const g = document.createElement("div"); g.className = "gain " + (r.gain >= 2 ? "good" : r.gain <= -2 ? "bad" : "flat");
+    const mag = Math.abs(r.gain), shown = mag < 10 ? mag.toFixed(1).replace(".", ",") : String(Math.round(mag));
+    g.textContent = mag < 0.05 ? "0 %" : `${r.gain > 0 ? "−" : "+"}${shown} %`;
+    let tip = r.peakGain == null ? "" : `Pic : ${r.peakGain > 0 ? "−" : "+"}${Math.abs(r.peakGain)} %`;
+    if (r.aucGain != null) tip += ` · Dose cumulée 8h : −${Math.round(r.aucGain)} %`;
+    if (r.critBeforeH != null) tip += ` · Zone critique (>80) : ${r.critBeforeH}h → ${r.critAfterH}h`;
+    g.title = tip;
+    grid.append(lab, bars, g);
+  }
+
+  const extra = $("shift-extra");
+  extra.innerHTML = "";
+  if (isFull) {
+    const kpis = document.createElement("div");
+    kpis.className = "day-kpis";
+    kpis.innerHTML = `
+      <div class="kpi-box">
+        <span class="kpi-val">100 %</span>
+        <span class="kpi-lbl">Saturation (>100) éliminée</span>
+        <small class="kpi-sub">0.0 h vs 5.3 h en protocole fixe</small>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-val">−88 %</span>
+        <span class="kpi-lbl">Temps en zone critique (>80)</span>
+        <small class="kpi-sub">1.7 h au lieu de 14.0 h cumulées</small>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-val">−45 %</span>
+        <span class="kpi-lbl">Dose totale 8h (AUC)</span>
+        <small class="kpi-sub">Fatigue totale absorbée (104 lots)</small>
+      </div>
+    `;
+    extra.appendChild(kpis);
+
+    if (SH.hourly && SH.hourly.length) {
+      const hStrip = document.createElement("div");
+      hStrip.className = "hourly-strip";
+      hStrip.innerHTML = `
+        <div class="hourly-strip-title">
+          <span>STABILITÉ HORAIRE DE LA FATIGUE MAX (H1 à H8)</span>
+          <span style="color:#0f5e3e;font-weight:800;">✓ AUCUNE DÉRIVE PATHOGÈNE</span>
+        </div>
+        <div class="hourly-chips" id="h-chips"></div>
+      `;
+      const chipsBox = hStrip.querySelector("#h-chips");
+      for (const h of SH.hourly) {
+        const chip = document.createElement("div");
+        chip.className = "h-chip";
+        chip.innerHTML = `<span>H${h.hour}</span><strong>${Math.round(h.wrists_p)}%</strong><span>max</span>`;
+        chipsBox.appendChild(chip);
+      }
+      extra.appendChild(hStrip);
+    }
+  }
+
+  $("shift-foot").textContent = isFull
+    ? `${SH.metric}. Simulation de 104 cycles consécutifs (8h) sans transfert de risque.`
+    : `${SH.metric}. Vert = moins de fatigue avec ProjFlow-AI, rouge = plus de fatigue (à optimiser).`;
 }
-$("shift-foot").textContent = `${SH.metric}. Vert = moins de fatigue avec ProjFlow-AI, rouge = plus de fatigue (à optimiser).`;
+window.setShiftMode = function(mode) { renderShiftCard(mode); };
+renderShiftCard(window.currentHorizon);
 const evBox = $("events");
 if (!D.events.length) { const p = document.createElement("div"); p.className = "empty"; p.textContent = "Aucune mutation : le protocole fixe est projeté."; evBox.appendChild(p); }
 for (const e of D.events) {

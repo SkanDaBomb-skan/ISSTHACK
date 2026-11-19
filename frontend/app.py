@@ -56,7 +56,8 @@ MODE_LABELS = {False: "Protocole fixe standard (fatigue élevée)", True: "ProjF
 def load_source(key: str):
     """Moteur chargé une seule fois par serveur : les rechargements de page et changements de source sont instantanés."""
     src = SOURCES[key]()
-    src.shift_comparison()  # pré-calcul de la comparaison avant/après du shift
+    src.shift_comparison()  # pré-calcul de la comparaison avant/après du shift court (5 lots)
+    src.full_day_comparison()  # pré-calcul de la simulation journée complète (104 lots / 8h)
     return src
 
 

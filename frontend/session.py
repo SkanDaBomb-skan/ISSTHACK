@@ -258,6 +258,7 @@ class ProjectorSession:
             "iatf": {"ok": ok, "msg": msg, "fp": self.fingerprint(), "ref": self.fingerprint_ref,
                      "edges": len(edges), "edgesOk": edges_ok, "locked": len(locked), "lockedOk": locked_ok},
             "shift": self.src.shift_comparison(),
+            "full_day": self.src.full_day_comparison(),
             "events": [{k: v for k, v in e.items()} for e in self.events[:5]],
             "source": self.src.title,
         }

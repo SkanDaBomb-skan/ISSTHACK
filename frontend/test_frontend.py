@@ -147,6 +147,20 @@ def test_badge_and_shift(tmpdir):
     print(f"ok  badge IATF {i['edgesOk']}/{i['edges']} précédences, {i['lockedOk']}/{i['locked']} verrouillées ; cycle {snap['total']:.0f} s ≤ takt ; shift : {gains}")
 
 
+def test_full_day_comparison(tmpdir):
+    src = Member1Source()
+    res = src.full_day_comparison()
+    assert "rows" in res and "hourly" in res and "kpis" in res
+    assert len(res["hourly"]) == 8
+    rows = {r["key"]: r for r in res["rows"]}
+    for j in ("wrists", "hands_fingers", "elbows", "shoulders"):
+        assert j in rows
+        assert rows[j]["gain"] > 30.0, f"gain pic insuffisant pour {j}: {rows[j]['gain']}"
+        assert rows[j]["aucGain"] > 35.0, f"gain AUC insuffisant pour {j}: {rows[j]['aucGain']}"
+        assert rows[j]["satAfterH"] == 0.0, f"la saturation doit être éliminée pour {j}"
+    print(f"ok  simulation 8h (104 lots) : 0h de saturation, AUC moyenne -{res['kpis']['auc_mean_gain']}, 8 heures stables")
+
+
 if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as d:
         test_member1_contract()
@@ -159,5 +173,6 @@ if __name__ == "__main__":
         test_next_batch_button(d)
         test_mode_switch_is_immediate(d)
         test_badge_and_shift(d)
+        test_full_day_comparison(d)
         test_repeated_mutation_does_not_flip(d)
     print("\nTous les tests du simulateur passent.")
