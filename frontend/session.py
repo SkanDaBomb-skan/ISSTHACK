@@ -47,13 +47,14 @@ class ProjectorSession:
             angles = self.src.mutated_angles(order, self.batch_no, self.ghost_angles)
             self.mutated = True
             self._set_plan(order, angles)
-            self.curve = self.src.fatigue_curve(order, self.batch_initial, mutated=True)
+            self.curve = self.src.fatigue_curve(order, self.batch_initial, guided=True)
             self._log("lot", f"Nouveau lot n°{self.batch_no} : séquence polymorphe (seed {self.batch_no})",
                       self.ghost_angles, angles, order, self.protocol)
         else:
             self.mutated = False
             self._set_plan(self.protocol, dict(self.ghost_angles))
-            self.curve = self.src.fatigue_curve(self.protocol, self.batch_initial)
+            # en mode ProjFlow-AI le guidage du projecteur s'applique dès le début du lot, avant toute réorganisation
+            self.curve = self.src.fatigue_curve(self.protocol, self.batch_initial, guided=self.ai)
             if self.batch_no > 1:
                 self.events.insert(0, self._event("lot", f"Nouveau lot n°{self.batch_no} : protocole fixe standard"))
         self.curve_t0 = 0.0
@@ -137,8 +138,10 @@ class ProjectorSession:
         return {j: self.src.pct(j, v) for j, v in values.items()}
 
     def _predicted_peak(self) -> tuple:
-        t0 = self.elapsed - self.curve_t0
-        win = self.curve[(self.curve["time_sec"] >= t0) & (self.curve["time_sec"] <= t0 + LOOKAHEAD_SEC)]
+        """Risque prévu SI l'on garde l'ordre standard (courbe du protocole fixe, sans guidage) :
+        c'est ce risque qui pousse l'IA à réorganiser la suite du lot."""
+        t0 = self.elapsed
+        win = self.protocol_curve[(self.protocol_curve["time_sec"] >= t0) & (self.protocol_curve["time_sec"] <= t0 + LOOKAHEAD_SEC)]
         best = (None, 0.0)
         for j, _ in self.src.joints:
             if win.empty:
@@ -178,7 +181,7 @@ class ProjectorSession:
         self._set_plan(new_order, new_angles)
         self.mutated = True
         self.mutations_in_batch += 1
-        self.curve = self.src.fatigue_curve([current] + rest, initial, first_remaining=remaining_cur, mutated=True)
+        self.curve = self.src.fatigue_curve([current] + rest, initial, first_remaining=remaining_cur, guided=self.ai)
         self.curve_t0 = self.elapsed
         ev = self._log(kind, reason, old_angles, new_angles, new_order, old_order, from_index=i)
         return ev

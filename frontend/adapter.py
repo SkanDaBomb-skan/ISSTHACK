@@ -183,41 +183,27 @@ class Member1Source:
     def locked_ids(self) -> List[str]:
         return [t.id for t in self.tasks if t.quality_critical]
 
+    # Effet du guidage angulaire du projecteur zénithal (nudge subconscient) sur la contrainte des tâches,
+    # repris du commit ab6340b (S. Frini). Coefficients multiplicatifs par articulation.
+    # Ce sont des hypothèses du backend, appliquées partout en mode ProjFlow-AI : jauges en direct ET tableau.
+    GUIDANCE = {
+        "M2_CONN": {"shoulders": 0.75, "elbows": 0.85, "wrists": 0.65, "hands_fingers": 0.75},  # poignet aligné, pincement réduit
+        "M3_TAPE": {"shoulders": 0.85, "elbows": 0.75, "wrists": 0.75, "hands_fingers": 1.0},   # rubanage guidé, torsion coude réduite
+    }
+
+    def guided(self, task: AssemblyTask) -> AssemblyTask:
+        """Tâche telle qu'exécutée sous guidage ProjFlow-AI (contrainte réduite selon GUIDANCE)."""
+        for prefix, k in self.GUIDANCE.items():
+            if task.id.startswith(prefix):
+                s = task.strain
+                return replace(task, strain=BiomechanicalStrain(
+                    shoulders=round(s.shoulders * k["shoulders"], 1), elbows=round(s.elbows * k["elbows"], 1),
+                    wrists=round(s.wrists * k["wrists"], 1), hands_fingers=round(s.hands_fingers * k["hands_fingers"], 1)))
+        return task
+
     def _create_guided_batch(self, raw_seq: List[AssemblyTask]) -> List[AssemblyTask]:
-        """Applique les facteurs de réduction biomécanique issus du guidage angulaire zénithal."""
-        guided = []
-        for t in raw_seq:
-            if t.id.startswith("M2_CONN"):
-                # Guidage angulaire zénithal : poignet aligné dans l'axe (-35% flexion, -25% pincement axial)
-                s = BiomechanicalStrain(
-                    shoulders=round(t.strain.shoulders * 0.75, 1),
-                    elbows=round(t.strain.elbows * 0.85, 1),
-                    wrists=round(t.strain.wrists * 0.65, 1),
-                    hands_fingers=round(t.strain.hands_fingers * 0.75, 1),
-                )
-                guided.append(AssemblyTask(
-                    id=t.id, name=t.name, macro_step_id=t.macro_step_id,
-                    macro_step_name=t.macro_step_name, duration_sec=t.duration_sec,
-                    coords=t.coords, strain=s, category=t.category,
-                    quality_critical=t.quality_critical, dependencies=t.dependencies,
-                ))
-            elif t.id.startswith("M3_TAPE"):
-                # Trajectoire de rubanage guidée : posture dynamique (-25% torsion coude)
-                s = BiomechanicalStrain(
-                    shoulders=round(t.strain.shoulders * 0.85, 1),
-                    elbows=round(t.strain.elbows * 0.75, 1),
-                    wrists=round(t.strain.wrists * 0.75, 1),
-                    hands_fingers=t.strain.hands_fingers,
-                )
-                guided.append(AssemblyTask(
-                    id=t.id, name=t.name, macro_step_id=t.macro_step_id,
-                    macro_step_name=t.macro_step_name, duration_sec=t.duration_sec,
-                    coords=t.coords, strain=s, category=t.category,
-                    quality_critical=t.quality_critical, dependencies=t.dependencies,
-                ))
-            else:
-                guided.append(t)
-        return guided
+        """Lot exécuté sous guidage zénithal (utilisé par full_day_comparison) : même modèle que guided()."""
+        return [self.guided(t) for t in raw_seq]
 
     def shift_comparison(self) -> dict:
         """Avant/après sur un shift : compare_shift du Membre 1 combinant l'ordonnancement polymorphe
@@ -225,10 +211,8 @@ class Member1Source:
         Mesure le pic de contrainte biomécanique maximale sous effort (% du protocole fixe)."""
         if getattr(self, "_shift", None) is None:
             base = self.optimizer.generate_baseline_sequence()
-            poly_guided = [
-                self._create_guided_batch(self.optimizer.generate_ergonomic_sequence(seed=i))
-                for i in range(1, self.SHIFT_BATCHES + 1)
-            ]
+            poly_guided = [[self.guided(t) for t in self.optimizer.generate_ergonomic_sequence(seed=i)]
+                           for i in range(1, self.SHIFT_BATCHES + 1)]
 
             res = self.twin.compare_shift(base, poly_guided)
             rows = []
@@ -368,9 +352,10 @@ class Member1Source:
         return self.by_id[task_id].duration_sec
 
     # -- fatigue -----------------------------------------------------------------
-    def fatigue_curve(self, order: Sequence[str], initial: Dict[str, float], first_remaining: Optional[float] = None, mutated: bool = False) -> pd.DataFrame:
-        """Courbe seconde par seconde (jumeau du Membre 1). `first_remaining` raccourcit la 1re tâche (tâche en cours)."""
-        seq = [self.by_id[i] for i in order]
+    def fatigue_curve(self, order: Sequence[str], initial: Dict[str, float], first_remaining: Optional[float] = None, guided: bool = False) -> pd.DataFrame:
+        """Courbe seconde par seconde (jumeau du Membre 1). `first_remaining` raccourcit la 1re tâche (tâche en cours).
+        `guided=True` (mode ProjFlow-AI) : les tâches sont exécutées sous guidage du projecteur (voir GUIDANCE)."""
+        seq = [self.guided(self.by_id[i]) if guided else self.by_id[i] for i in order]
         if seq and first_remaining is not None:
             seq[0] = replace(seq[0], duration_sec=max(0.5, first_remaining))
         if not seq:
@@ -493,12 +478,12 @@ class Member3Source:
         f = self.base_payload.fatigue_before_lot
         return {j: float(getattr(f, f"{j}_pct")) for j, _ in self.joints}
 
-    def fatigue_curve(self, order: Sequence[str], initial: Dict[str, float], first_remaining: Optional[float] = None, mutated: bool = False) -> pd.DataFrame:
+    def fatigue_curve(self, order: Sequence[str], initial: Dict[str, float], first_remaining: Optional[float] = None, guided: bool = False) -> pd.DataFrame:
         """Interpolation linéaire vers l'état post-lot calculé par le pipeline du Membre 3."""
         total = sum(self.duration(c) for c in order)
         if first_remaining is not None and order:
             total -= self.duration(order[0]) - first_remaining
-        after = (self.ai_payload if mutated else self.base_payload).fatigue_after_lot
+        after = (self.ai_payload if guided else self.base_payload).fatigue_after_lot
         target = {j: float(getattr(after, f"{j}_pct")) for j, _ in self.joints}
         n = max(1, int(round(total)))
         rows = [{"time_sec": float(k), **{f"{j}_fatigue": initial[j] + (target[j] - initial[j]) * k / n for j, _ in self.joints}} for k in range(n + 1)]
