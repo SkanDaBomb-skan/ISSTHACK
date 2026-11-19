@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; font-family: "Inter", "Segoe UI", sans-serif; color: #201f27; }
+  .shell { padding: 0 6px 18px; }
+
+  /* ---- top bar (retro editorial skin of the ProjFlow dashboard) ---- */
+  .topbar { height: 74px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 22px;
+            border: 2px solid #27242a; border-top: 0; border-radius: 0 0 18px 18px; background: #f4f0df;
+            box-shadow: 0 6px 0 #ed59b8, 0 10px 0 #202128; margin: 0 8px 26px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 30px; height: 30px; display: flex; align-items: flex-end; gap: 3px; transform: skew(-10deg); }
+  .brand-mark span { width: 7px; background: #2765d5; border: 1px solid #24232a; }
+  .brand-mark span:nth-child(1) { height: 14px; } .brand-mark span:nth-child(2) { height: 23px; }
+  .brand-mark span:nth-child(3) { height: 18px; background: #ed59b8; }
+  .brand h1 { margin: 0; font-family: "DM Serif Display", serif; font-weight: 400; font-size: 23px; line-height: 1; color: #222027; }
+  .brand h1 span { color: #e83f9d; }
+  .brand p { margin: 4px 0 0; color: #4e4c53; font-size: 7px; font-weight: 700; letter-spacing: 1.55px; }
+  .station { display: flex; align-items: center; gap: 10px; padding: 8px 18px; border: 2px solid #28262c; border-radius: 999px;
+             background: #f8f4e5; box-shadow: 4px 4px 0 #f0df54; }
+  .station small { display: block; color: #67636b; font-size: 7px; letter-spacing: 1.2px; }
+  .station strong { color: #25232a; font-size: 12px; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #188f83; box-shadow: 0 0 0 3px #bde4d0; animation: pulse 2s infinite; }
+  .top-right { justify-self: end; display: flex; gap: 10px; align-items: center; font-size: 9px; color: #77717a; letter-spacing: .8px; }
+  .top-right b { color: #16786f; }
+  .lot-chip { padding: 6px 10px; border: 2px solid #25232a; border-radius: 8px; background: #f0df54; color: #25232a; font-weight: 800; box-shadow: 2px 2px 0 #25232a; }
+  @keyframes pulse { 50% { opacity: .35; } }
+
+  /* ---- layout ---- */
+  .workspace { display: grid; grid-template-columns: minmax(0, 7fr) minmax(300px, 2.6fr); gap: 26px; padding: 0 10px; }
+  .eyebrow { display: flex; align-items: center; gap: 7px; color: #f9f4e3; text-shadow: 1px 1px #25232a; font-size: 9px; font-weight: 700; letter-spacing: 1.4px; }
+  .heading { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+  .heading h2 { margin: 6px 0 0; font-family: "DM Serif Display", serif; font-weight: 400; font-size: 30px; color: #f8f3df; text-shadow: 2px 2px 0 #25232a; }
+  .task-line { margin: 5px 0 0; color: #f8f3df; font-size: 12px; font-weight: 600; text-shadow: 1px 1px #25232a; }
+  .step-chip { display: flex; align-items: baseline; gap: 5px; color: #f6efd9; }
+  .step-chip span { font-size: 9px; letter-spacing: 1px; } .step-chip strong { font-size: 26px; color: #f3df55; text-shadow: 1px 1px #25232a; }
+
+  .mode { width: fit-content; display: flex; padding: 3px; margin-bottom: 20px; border: 2px solid #26242a; border-radius: 999px;
+          background: #f3efdf; box-shadow: 0 5px 0 #2765d5, 0 8px 0 #24242a; }
+  .mode span { padding: 8px 15px; border-radius: 999px; font-size: 11px; font-weight: 600; color: #4b4750; }
+  .mode span.on { color: #222027; background: #f0df54; box-shadow: inset 0 0 0 1px #29262c; }
+  .mode span.on.ai { color: #fff9eb; background: #e654af; }
+
+  .blueprint { border: 2px solid #27252b; border-radius: 16px; overflow: hidden; background: #f4efdd;
+               box-shadow: 8px 8px 0 #f0df54, 13px 13px 0 #ed59b8, 16px 16px 0 #27252b; }
+  .bp-top, .legend { height: 40px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between;
+                     background: #f3efdf; color: #343039; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+  .bp-top { border-bottom: 2px solid #28262c; } .legend { border-top: 2px solid #27252b; justify-content: flex-start; gap: 18px; font-weight: 500; color: #3f3b43; }
+  .bp-top b { color: #fff; background: #2765d5; border: 2px solid #26242a; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #e951ac; box-shadow: 0 0 0 3px #f7c7e3; margin-right: 8px; }
+  .legend span { display: flex; align-items: center; gap: 6px; } .legend i { display: block; width: 16px; }
+  .legend .cyan { height: 3px; background: #00F0FF; box-shadow: 0 0 5px #00F0FF; }
+  .legend .ghost { border-top: 2px dotted #64748b; } .legend .green { height: 9px; max-width: 9px; border-radius: 50%; border: 2px solid #10B981; }
+  .legend .next { border-top: 2px dashed #0aa9b8; } .legend b { margin-left: auto; color: #4f4852; }
+  svg#bench { display: block; width: 100%; background: #07111c; }
+
+  .seq-card { margin-top: 28px; padding: 12px 14px 10px; border: 2px solid #28252c; border-radius: 16px; background: #f3efdf;
+              box-shadow: 6px 6px 0 #2765d5, 9px 9px 0 #28252c; }
+  .seq-row { display: grid; grid-template-columns: 82px 1fr; gap: 10px; align-items: center; margin-bottom: 7px; }
+  .seq-row > span { font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #28252c; }
+  .cells { display: flex; flex-wrap: wrap; gap: 3px; }
+  .cell { position: relative; min-width: 46px; padding: 4px 4px; border: 1.5px solid #28252c; border-radius: 4px; font-size: 8px; font-weight: 800;
+          text-align: center; color: #1d1b22; white-space: nowrap; transition: opacity .3s, transform .3s; }
+  .cell.done { opacity: .35; } .cell.cur { transform: translateY(-3px); box-shadow: 0 3px 0 #28252c; outline: 2px solid #00b8cc; outline-offset: 1px; }
+  .cell.moved::after { content: ""; position: absolute; top: -4px; right: -4px; width: 7px; height: 7px; border-radius: 50%; background: #00F0FF; border: 1px solid #28252c; }
+  .seq-foot { display: flex; justify-content: space-between; color: #4f4852; font-size: 8px; margin-top: 4px; }
+
+  .note { min-height: 50px; margin-top: 24px; padding: 9px 16px; display: flex; align-items: center; gap: 12px; border: 2px solid #28252c;
+          border-radius: 999px; background: #f1df55; box-shadow: 0 5px 0 #2765d5, 0 8px 0 #28252c; color: #252229; opacity: .55; transition: opacity .3s; }
+  .note.on { opacity: 1; } .note strong { display: block; font-size: 9px; letter-spacing: 1px; }
+  .note span { color: #544e4c; font-size: 9px; } .note b { margin-left: auto; color: #14786f; font-size: 14px; white-space: nowrap; }
+
+  /* ---- side cards ---- */
+  aside { display: flex; flex-direction: column; gap: 16px; }
+  .card { padding: 15px 16px; border: 2px solid #28252c; border-radius: 18px; background: #f3efdf; box-shadow: 6px 6px 0 #ed59b8, 9px 9px 0 #28252c; }
+  .card.blue { box-shadow: 6px 6px 0 #2765d5, 9px 9px 0 #28252c; }
+  .card-label { display: flex; justify-content: space-between; align-items: center; color: #28252c; font-size: 8px; font-weight: 700; letter-spacing: 1.05px; }
+  .card-label i { font-style: normal; font-size: 7px; padding: 4px 6px; border: 2px solid #28252c; border-radius: 3px; background: #178e82; color: #fff8e6; }
+  .card-label i.warn { background: #f0df54; color: #28252c; }
+  .takt { display: flex; align-items: baseline; gap: 9px; margin-top: 8px; }
+  .takt strong { font-family: "DM Serif Display", serif; font-weight: 400; font-size: 52px; line-height: 1; color: #252229; font-variant-numeric: tabular-nums; }
+  .takt span { color: #716b70; font-size: 12px; }
+  .track { height: 9px; margin: 12px 0 8px; border: 1px solid #28252c; border-radius: 5px; background: #ded8c5; overflow: hidden; }
+  .track div { height: 100%; background: linear-gradient(90deg, #2765d5, #e953ae); border-right: 1px solid #28252c; }
+  .meta { display: flex; justify-content: space-between; color: #6d6770; font-size: 8px; letter-spacing: .6px; }
+  .meta b { color: #28252c; }
+  .step-name { margin: 6px 0 4px; font-weight: 700; font-size: 13px; color: #25232a; }
+  .lockline { margin-top: 8px; padding: 5px 8px; border: 1.5px solid #28252c; border-radius: 8px; font-size: 8px; font-weight: 700; color: #28252c; }
+  .lockline.locked { background: #f0df54; } .lockline.free { background: #c9ecdf; }
+  .gauges { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; margin-top: 10px; }
+  .gauge { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .ring { --p: 0deg; --c: #34d399; position: relative; width: 56px; height: 56px; flex: 0 0 56px; border-radius: 50%;
+          background: conic-gradient(var(--c) var(--p), #1b2b39 0); display: grid; place-items: center; box-shadow: 2px 2px 0 #28252c; }
+  .ring::before { content: ""; position: absolute; width: 46px; height: 46px; border-radius: 50%; background: #f3efdf; }
+  .ring div { z-index: 1; text-align: center; display: flex; flex-direction: column; }
+  .ring strong { font-size: 13px; color: #26232a; } .ring span { font-size: 6px; font-weight: 800; color: var(--c); }
+  .gmeta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .gmeta > span { font-size: 10px; font-weight: 700; color: #29262d; } .gmeta small { font-size: 8px; color: #7a7279; white-space: nowrap; }
+  .gmeta small b { margin-left: 3px; color: #14786f; } .gmeta small b.up { color: #d9480f; }
+  .composite { display: grid; grid-template-columns: 1fr auto; margin-top: 12px; padding-top: 10px; border-top: 1px solid #b8b09f; }
+  .composite span, .composite i { color: #706971; font-size: 7px; letter-spacing: 1px; font-style: normal; }
+  .composite strong { grid-row: span 2; font-size: 20px; }
+  .lock-badge { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid #28252c; border-radius: 16px;
+                background: #16a36f; color: #f4fff9; box-shadow: 6px 6px 0 #f0df54, 9px 9px 0 #28252c; }
+  .lock-badge.bad { background: #e5484d; }
+  .lock-badge .ico { font-size: 26px; line-height: 1; }
+  .lock-badge strong { display: block; font-size: 14px; font-weight: 800; letter-spacing: .2px; }
+  .lock-badge small { display: block; margin-top: 3px; font-size: 8.5px; opacity: .92; }
+  .takt-sub { display: grid; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #b8b09f; font-size: 9px; color: #4b4750; }
+  .takt-sub div { display: flex; justify-content: space-between; } .takt-sub b { color: #14786f; }
+  .gauge-legend { display: flex; gap: 10px; margin-top: 10px; font-size: 7.5px; color: #4b4750; flex-wrap: wrap; }
+  .gauge-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 3px; border: 1px solid #28252c; vertical-align: -1px; }
+  .shift-card { margin-top: 26px; padding: 13px 16px 12px; border: 2px solid #28252c; border-radius: 16px; background: #f3efdf;
+                box-shadow: 6px 6px 0 #ed59b8, 9px 9px 0 #28252c; }
+  .shift-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .shift-head strong { font-size: 9px; letter-spacing: 1px; color: #28252c; } .shift-head span { font-size: 8px; color: #6d6770; }
+  .shift-grid { display: grid; grid-template-columns: 96px 1fr 62px; gap: 7px 12px; align-items: center; margin-top: 10px; }
+  .shift-grid .lab { font-size: 10px; font-weight: 700; color: #29262d; }
+  .bars { display: grid; gap: 3px; }
+  .bar { position: relative; height: 13px; border: 1.5px solid #28252c; border-radius: 4px; background: #e6e0cc; overflow: hidden; }
+  .bar div { height: 100%; } .bar span { position: absolute; left: 6px; top: 0; font-size: 8px; font-weight: 700; color: #1d1b22; line-height: 11px; }
+  .bar.before div { background: #f39b4b; } .bar.after div { background: #3fc0a8; }
+  .gain { justify-self: end; padding: 3px 7px; border: 1.5px solid #28252c; border-radius: 9px; font-size: 9px; font-weight: 800; }
+  .gain.good { background: #c9ecdf; color: #0f5e3e; } .gain.bad { background: #fbd0cf; color: #9b1c1c; } .gain.flat { background: #ece6d2; color: #4b4750; }
+  .shift-foot { margin-top: 9px; font-size: 8px; color: #6d6770; }
+  .protocol { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border: 2px solid #28252c; border-radius: 16px;
+              background: #f0df54; box-shadow: 6px 6px 0 #ed59b8, 9px 9px 0 #28252c; }
+  .shield { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 50%; background: #188f83; color: #f7f2e2;
+            box-shadow: inset 0 0 0 2px #28252c; font-size: 18px; font-weight: 800; }
+  .protocol small { display: block; color: #68612d; font-size: 7px; letter-spacing: 1px; }
+  .protocol strong { display: block; color: #252229; font-size: 12px; margin: 2px 0; }
+  .protocol code { font-size: 9px; color: #4b4520; }
+  .ev { margin-top: 8px; padding: 7px 9px; border: 1.5px solid #28252c; border-radius: 10px; background: #fbf8ec; font-size: 9px; color: #2a272e; }
+  .ev .badge { display: inline-block; padding: 1px 6px; margin-right: 5px; border: 1.5px solid #28252c; border-radius: 9px; font-size: 7px; font-weight: 800;
+               letter-spacing: .6px; text-transform: uppercase; background: #f0df54; }
+  .ev .badge.auto { background: #f39b4b; } .ev .badge.backend { background: #a78bfa; color: #fff; } .ev .badge.lot { background: #3fc0a8; }
+  .ev .badge.manuel { background: #2765d5; color: #fff; } .ev .badge.mode { background: #e654af; color: #fff; } .ev .badge.refusé, .ev .badge.erreur, .ev .badge.ignoré { background: #f87171; }
+  .ev .sub { margin-top: 3px; color: #6d6770; font-size: 8px; }
+  .empty { color: #6d6770; font-size: 9px; margin-top: 8px; }
+
+  @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .topbar { grid-template-columns: 1fr auto; } .station { display: none; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark"><span></span><span></span><span></span></div>
+      <div><h1>ProjFlow<span>AI</span></h1><p>SPATIAL ASSEMBLY INTELLIGENCE</p></div></div>
+    <div class="station"><span class="live-dot"></span><div><small>POSTE ACTIF</small><strong>LEONI Workstation 3.2</strong></div></div>
+    <div class="top-right"><span>SYNC <b>LIVE</b></span><span class="lot-chip" id="lot">LOT 1</span></div>
+  </header>
+
+  <div class="workspace">
+    <section>
+      <div class="heading">
+        <div>
+          <div class="eyebrow">▦ PROJECTEUR ZÉNITHAL / <span id="src"></span></div>
+          <h2>Établi virtuel · Poste 3.2</h2>
+          <p class="task-line" id="taskline"></p>
+        </div>
+        <div class="step-chip"><span>ÉTAPE</span><strong id="stepno">01</strong><i id="stepof">/ 21</i></div>
+      </div>
+      <div class="mode"><span id="m-fixed">○ Protocole fixe standard (fatigue élevée)</span><span id="m-ai">✦ ProjFlow-AI · nudge subconscient (protégé)</span></div>
+
+      <div class="blueprint">
+        <div class="bp-top"><div><span class="status-dot"></span>PROJECTEUR EN LIGNE · <span id="ntasks"></span> TÂCHES · TAKT <span id="takt"></span> S</div>
+          <div>VUE ZÉNITHALE <b>2D</b></div></div>
+        <svg id="bench" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="legend">
+          <span><i class="cyan"></i> Trajectoire projetée</span>
+          <span><i class="green"></i> Cible active</span>
+          <span><i class="next"></i> Cibles suivantes</span>
+          <span><i class="ghost"></i> Trajectoire protocole</span>
+          <b id="ordertag"></b>
+        </div>
+      </div>
+
+      <div class="seq-card">
+        <div class="seq-row"><span>PROTOCOLE</span><div class="cells" id="row-proto"></div></div>
+        <div class="seq-row"><span id="row-live-label">EN COURS</span><div class="cells" id="row-live"></div></div>
+        <div class="seq-foot"><span>Couleur = macro-étape IATF · point cyan = étape déplacée par l'IA</span><span id="moved"></span></div>
+      </div>
+
+      <div class="note" id="note"><span style="font-size:18px">✦</span>
+        <div><strong id="note-title"></strong><span id="note-text"></span></div><b id="note-badge"></b></div>
+
+      <div class="shift-card">
+        <div class="shift-head"><strong>AVANT / APRÈS · PROTOCOLE FIXE vs PROJFLOW-AI</strong><span id="shift-title"></span></div>
+        <div class="shift-grid" id="shift-grid"></div>
+        <div class="shift-foot" id="shift-foot"></div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="lock-badge" id="lockbadge"><span class="ico">🔒</span>
+        <div><strong id="lock-title">IATF 16949 · Protocole verrouillé : 100 % conforme</strong><small id="lock-sub"></small></div></div>
+      <div class="card">
+        <div class="card-label"><span>◷ TEMPS DE CYCLE EN DIRECT</span><i id="runstate">EN COURS</i></div>
+        <div class="takt"><strong id="clock">0 s</strong><span id="taktof">/ 276 s limite</span></div>
+        <div class="track"><div id="track"></div></div>
+        <div class="meta"><span>RESTANT <b id="elapsed">0 s</b></span><span>ÉTAPE <b id="stepmeta"></b></span></div>
+        <div class="takt-sub"><div><span>Cycle planifié</span><b id="planned"></b></div><div><span>Retard dû à l'IA</span><b id="delay"></b></div></div>
+      </div>
+      <div class="card blue">
+        <div class="card-label"><span id="steplabel">MICRO-TÂCHE PROJETÉE</span><i id="approach" title="angle d'approche de la main (90° = tout droit depuis l'opérateur)">90°</i></div>
+        <div class="step-name" id="stepname"></div>
+        <div class="meta"><span id="stepmacro"></span><span id="stepdur"></span></div>
+        <div class="lockline" id="steplock"></div>
+      </div>
+      <div class="card">
+        <div class="card-label"><span>FATIGUE TENDINEUSE PRÉDICTIVE</span><i id="fatstate">OPTIMISÉE</i></div>
+        <div style="color:#726c72;font-size:8px;margin-top:5px">Jumeau numérique · aucun capteur corporel · barré = protocole fixe</div>
+        <div class="gauges" id="gauges"></div>
+        <div class="composite"><span>CHARGE COMPOSITE</span><strong id="comp">0 %</strong><i id="compnote"></i></div>
+        <div class="gauge-legend"><span><i style="background:#34d399"></i>Sûr &lt; 40 %</span><span><i style="background:#fb923c"></i>Modéré 40–75 %</span><span><i style="background:#ef4444"></i>Danger &gt; 75 %</span><span>100 % = pic du protocole fixe</span></div>
+      </div>
+      <div class="card blue">
+        <div class="card-label"><span>JOURNAL DES MUTATIONS</span></div>
+        <div id="events"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const L = D.layout, W = L.w, H = L.d, OP = { x: L.op[0], y: L.op[1] };
+const K = (W + 140) / 860;              // svg units per CSS pixel (keeps text and strokes readable)
+const N = D.steps.length;
+const loadT = performance.now();
+const ANIM_MS = 1300, ANIM_DELAY = 250;
+const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+// ---------------------------------------------------------------- static svg
+const svg = $("bench");
+svg.setAttribute("viewBox", `-70 -120 ${W + 140} ${H + 320}`);
+const defs = el("defs", {}, svg);
+const pat = el("pattern", { id: "grid", width: 100, height: 100, patternUnits: "userSpaceOnUse" }, defs);
+el("path", { d: "M100 0H0V100", fill: "none", stroke: "#15283A", "stroke-width": 1.2 * K / 2.5 * 2 }, pat);
+for (const [id, sd] of [["glow", 7], ["glowG", 9]]) {
+  const f = el("filter", { id, x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+  el("feGaussianBlur", { stdDeviation: sd * K / 2.5, result: "b" }, f);
+  const m = el("feMerge", {}, f); el("feMergeNode", { in: "b" }, m); el("feMergeNode", { in: "SourceGraphic" }, m);
+}
+const mk = el("marker", { id: "arrow", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 4, markerHeight: 4, orient: "auto-start-reverse" }, defs);
+el("path", { d: "M0 0L10 5L0 10z", fill: "#10B981" }, mk);
+const txt = (x, y, s, size, fill, parent, extra = {}) => { const t = el("text", { x, y, "font-size": size * K, fill, "font-family": "Inter, sans-serif", ...extra }, parent); t.textContent = s; return t; };
+
+el("rect", { x: -45, y: -80, width: W + 90, height: H + 125, rx: 10 * K, fill: "none", stroke: "rgba(0,240,255,.35)", "stroke-dasharray": `${5 * K} ${6 * K}`, "stroke-width": K }, svg);
+txt(-38, -92, "COUVERTURE DU PROJECTEUR ZÉNITHAL", 8, "rgba(0,240,255,.7)", svg, { "font-weight": 700, "letter-spacing": K });
+el("rect", { x: 0, y: 0, width: W, height: H, rx: 6 * K, fill: "#0E1C2B", stroke: "#3B5A75", "stroke-width": 2 * K }, svg);
+el("rect", { x: 0, y: 0, width: W, height: H, rx: 6 * K, fill: "url(#grid)" }, svg);
+txt(10, H - 10, L.name, 8, "#6B8499", svg);
+const boxes = [];   // occupied label areas (zone names, squares, task labels)
+for (const z of L.zones) {
+  boxes.push({ x0: z.x0 + 4, y0: z.y0 + 2 * K, x1: z.x0 + 8 + z.label.length * 3.5 * K, y1: z.y0 + 11 * K });
+  el("rect", { x: z.x0, y: z.y0, width: z.x1 - z.x0, height: z.y1 - z.y0, fill: "rgba(148,163,184,.04)", stroke: "rgba(148,163,184,.35)", "stroke-dasharray": `${4 * K} ${4 * K}`, "stroke-width": K }, svg);
+  txt(z.x0 + 6, z.y0 + 9 * K, z.label.toUpperCase(), 5.5, "rgba(170,190,205,.55)", svg, { "letter-spacing": 0.4 * K });
+}
+el("ellipse", { cx: OP.x, cy: H + 92, rx: 150, ry: 42, fill: "#18303F", stroke: "#6F9AA5", "stroke-width": K }, svg);
+el("circle", { cx: OP.x, cy: H + 90, r: 34, fill: "#26485A", stroke: "#9BB5BF", "stroke-width": K }, svg);
+txt(OP.x, H + 175, "OPÉRATEUR", 8, "#8FB1BB", svg, { "text-anchor": "middle", "font-weight": 700 });
+
+// slot labels: greedy placement so that no two labels (nor a label and a square) overlap
+const slots = {};
+const slotLayer = el("g", {}, svg), labelLayer = el("g", {}, svg);
+for (const s of D.steps) boxes.push({ x0: s.x - 8 * K, y0: s.y - 8 * K, x1: s.x + 8 * K, y1: s.y + 8 * K });
+const hit = (b) => boxes.some((o) => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0);
+for (const s of D.steps) {
+  const g = el("g", { transform: `translate(${s.x} ${s.y})` }, slotLayer);
+  const r = el("rect", { x: -7 * K, y: -7 * K, width: 14 * K, height: 14 * K, rx: 2 * K, fill: s.color, stroke: "#0B1520", "stroke-width": 1.5 * K }, g);
+  const w = (s.short.length + 2) * 4.3 * K, h = 9 * K;
+  const cands = [];
+  for (const ring of [1, 2, 3]) {
+    const d = (10 + (ring - 1) * 11) * K;
+    cands.push([0, d + h, "middle"], [0, -d, "middle"], [d, h / 2.6, "start"], [-d, h / 2.6, "end"],
+               [d, d + h, "start"], [-d, d + h, "end"], [d, -d, "start"], [-d, -d, "end"]);
+  }
+  let pick = cands[0];
+  for (const c of cands) {
+    const x0 = c[2] === "middle" ? s.x + c[0] - w / 2 : c[2] === "start" ? s.x + c[0] : s.x + c[0] - w;
+    const b = { x0, x1: x0 + w, y0: s.y + c[1] - h, y1: s.y + c[1] + 2 * K };
+    if (!hit(b)) { pick = c; boxes.push(b); break; }
+  }
+  const t = txt(s.x + pick[0], s.y + pick[1], s.short, 7, "#CFE3EE", labelLayer, { "text-anchor": pick[2], "font-weight": 600,
+    "paint-order": "stroke", stroke: "#0E1C2B", "stroke-width": 3 * K });
+  slots[s.id] = { r, t, s };
+}
+
+// dynamic layer
+const dyn = el("g", {}, svg);
+const nextLine = el("polyline", { fill: "none", stroke: "rgba(0,240,255,.5)", "stroke-width": 1.5 * K, "stroke-dasharray": `${6 * K} ${6 * K}` }, dyn);
+const nextDots = [0, 1, 2].map(() => { const g = el("g", {}, dyn); el("circle", { r: 9 * K, fill: "rgba(16,185,129,.8)", stroke: "#10B981", "stroke-width": K }, g);
+  const t = txt(0, 3.5 * K, "", 9, "#04261B", g, { "text-anchor": "middle", "font-weight": 800 }); return { g, t }; });
+const ghostPath = el("path", { fill: "none", stroke: "rgba(226,232,240,.85)", "stroke-width": 2.2 * K, "stroke-dasharray": `${2 * K} ${4 * K}`, "stroke-linecap": "round" }, dyn);
+const ghostLbl = txt(0, 0, "trajectoire protocole", 7, "rgba(226,232,240,.9)", dyn, { "text-anchor": "middle" });
+const arc = el("path", { fill: "none", stroke: "#10B981", "stroke-width": 2.2 * K }, dyn);
+const dGroup = el("g", {}, dyn);
+const dBox = el("rect", { rx: 4 * K, fill: "rgba(4,38,27,.9)", stroke: "#10B981", "stroke-width": K }, dGroup);
+const dTxt = txt(0, 0, "", 12, "#10B981", dGroup, { "text-anchor": "middle", "font-weight": 800 });
+const glow = [[22, .07], [13, .14], [7, .26]].map(([w, a]) => el("path", { fill: "none", stroke: `rgba(0,240,255,${a})`, "stroke-width": w * K, "stroke-linecap": "round" }, dyn));
+const core = el("path", { fill: "none", stroke: "#00F0FF", "stroke-width": 3 * K, filter: "url(#glow)", "stroke-linecap": "round" }, dyn);
+const coreW = el("path", { fill: "none", stroke: "rgba(235,254,255,.9)", "stroke-width": 1 * K, "stroke-linecap": "round" }, dyn);
+const tgt = el("g", {}, dyn);
+el("circle", { r: 30 * K, fill: "rgba(16,185,129,.12)", filter: "url(#glowG)" }, tgt);
+const halo = el("circle", { r: 19 * K, fill: "rgba(16,185,129,.22)" }, tgt);
+el("circle", { r: 12 * K, fill: "none", stroke: "#10B981", "stroke-width": 2.2 * K }, tgt);
+el("circle", { r: 4.5 * K, fill: "#10B981" }, tgt);
+const arrow = el("line", { stroke: "#10B981", "stroke-width": 2.6 * K, "marker-end": "url(#arrow)" }, dyn);
+const dot = el("circle", { r: 6 * K, fill: "#E8FEFF", stroke: "#00F0FF", "stroke-width": 3 * K }, dyn);
+
+// ---------------------------------------------------------------- side panels (static per snapshot)
+$("src").textContent = D.source.toUpperCase();
+$("lot").textContent = `LOT ${D.batch}`;
+$("ntasks").textContent = N; $("takt").textContent = Math.round(D.takt); $("taktof").textContent = `/ ${Math.round(D.takt)} s limite`;
+const delay = Math.max(0, D.total - D.takt), fits = D.total <= D.takt + 1e-6;
+$("planned").textContent = `${D.total.toFixed(1)} s ${fits ? "≤" : ">"} takt ${Math.round(D.takt)} s ${fits ? "✓" : "✗"}`;
+$("delay").textContent = delay > 0 ? `+${delay.toFixed(1)} s ✗` : "0 s ✓";
+$("stepof").textContent = "/ " + N;
+$("m-fixed").className = D.ai ? "" : "on"; $("m-ai").className = D.ai ? "on ai" : "";
+$("ordertag").textContent = D.mutated ? "ORDRE IA" : "ORDRE PROTOCOLE";
+$("row-live-label").textContent = D.mutated ? "SÉQUENCE IA" : "EN COURS";
+$("runstate").textContent = D.playing ? `EN COURS ${D.speed}×` : "PAUSE";
+if (!D.playing) $("runstate").className = "warn";
+const byId = Object.fromEntries(D.steps.map((s) => [s.id, s]));
+const mkCell = (s, parent) => { const c = document.createElement("span"); c.className = "cell"; c.style.background = s.color; c.textContent = s.short; c.title = s.name; parent.appendChild(c); return c; };
+D.protocol.forEach((id) => mkCell(byId[id], $("row-proto")));
+const liveCells = D.steps.map((s, n) => { const c = mkCell(s, $("row-live")); if (D.protocol[n] !== s.id) c.classList.add("moved"); return c; });
+$("moved").textContent = `${D.steps.filter((s, n) => D.protocol[n] !== s.id).length} / ${N} étapes réordonnées`;
+
+const ev0 = D.events.find((e) => "reordered" in e);
+$("note").className = "note" + (D.mutated ? " on" : "");
+if (ev0 && D.mutated) {
+  $("note-title").textContent = "MUTATION DE TRAJECTOIRE APPLIQUÉE";
+  $("note-text").textContent = `${ev0.reordered} étapes réordonnées · ${ev0.rotated} trajectoires tournées de ${ev0.mean_rotation}° · déviation poignet ${ev0.dev_before}° → ${ev0.dev_after}° · protocole inchangé`;
+  $("note-badge").textContent = `−${Math.max(0, Math.round(ev0.dev_before - ev0.dev_after))}° POIGNET`;
+} else {
+  $("note-title").textContent = D.ai ? "IA EN VEILLE" : "PROTOCOLE FIXE";
+  $("note-text").textContent = D.ai ? "Le jumeau de fatigue surveille le cycle ; la trajectoire sera mutée si un pic est prévu." : "Polymorphisme désactivé : trajectoires standard à 90°.";
+  $("note-badge").textContent = "";
+}
+const I = D.iatf, compliant = I.ok && I.fp === I.ref && I.edgesOk === I.edges && I.lockedOk === I.locked;
+$("lockbadge").className = "lock-badge" + (compliant ? "" : " bad");
+$("lock-title").textContent = compliant ? "IATF 16949 · Protocole verrouillé : 100 % conforme" : "IATF 16949 · NON CONFORME";
+$("lock-sub").textContent = (I.edges ? `${I.edgesOk}/${I.edges} règles de précédence · ` : "Macro-phases dans l'ordre · ")
+  + (I.locked ? `${I.lockedOk}/${I.locked} positions verrouillées · ` : "") + (I.fp === I.ref ? `empreinte ${I.fp} identique` : "empreinte modifiée")
+  + (I.ok ? "" : ` · ${I.msg}`);
+const SH = D.shift; $("shift-title").textContent = SH.title;
+for (const r of SH.rows) {
+  const max = Math.max(r.before, r.after, 1);
+  const lab = document.createElement("div"); lab.className = "lab"; lab.textContent = r.label;
+  const bars = document.createElement("div"); bars.className = "bars";
+  for (const [cls, v, name] of [["before", r.before, "Protocole fixe"], ["after", r.after, "ProjFlow-AI"]]) {
+    const b = document.createElement("div"); b.className = "bar " + cls;
+    b.innerHTML = `<div style="width:${(v / max) * 100}%"></div><span></span>`;
+    b.querySelector("span").textContent = `${name} : ${Math.round(v)} %`; bars.appendChild(b);
+  }
+  const g = document.createElement("div"); g.className = "gain " + (r.gain > 1 ? "good" : r.gain < -1 ? "bad" : "flat");
+  g.textContent = r.gain > 1 ? `−${Math.round(r.gain)} %` : r.gain < -1 ? `+${Math.round(-r.gain)} %` : "≈";
+  g.title = r.peakGain == null ? "" : `pic : ${r.peakGain > 0 ? "−" : "+"}${Math.abs(r.peakGain)} %`;
+  $("shift-grid").append(lab, bars, g);
+}
+$("shift-foot").textContent = `${SH.metric}. Vert = moins de fatigue avec ProjFlow-AI, rouge = plus de fatigue (à optimiser).`;
+const evBox = $("events");
+if (!D.events.length) { const p = document.createElement("div"); p.className = "empty"; p.textContent = "Aucune mutation : le protocole fixe est projeté."; evBox.appendChild(p); }
+for (const e of D.events) {
+  const d = document.createElement("div"); d.className = "ev";
+  const b = document.createElement("span"); b.className = "badge " + e.kind; b.textContent = e.kind; d.appendChild(b);
+  d.appendChild(document.createTextNode(e.text));
+  if ("reordered" in e) { const s = document.createElement("div"); s.className = "sub";
+    s.textContent = `Lot ${e.batch} · t=${Math.round(e.t)} s · ${e.reordered} réordonnées · ↻ ${e.mean_rotation}° · IATF ${e.iatf_ok ? "✓" : "✗"} · empreinte ${e.fingerprint_ok ? "inchangée ✓" : "modifiée ✗"}`; d.appendChild(s); }
+  evBox.appendChild(d);
+}
+const gauges = D.joints.map((j) => {
+  const g = document.createElement("div"); g.className = "gauge";
+  g.innerHTML = `<div class="ring"><div><strong>0%</strong><span>LOW</span></div></div><div class="gmeta"><span></span><small></small></div>`;
+  g.querySelector(".gmeta > span").textContent = j.label; $("gauges").appendChild(g);
+  return { key: j.key, ring: g.querySelector(".ring"), val: g.querySelector(".ring strong"), lvl: g.querySelector(".ring span"), sub: g.querySelector("small") };
+});
+
+// ---------------------------------------------------------------- per frame
+const elapsedNow = (now) => D.playing ? Math.min(D.total - 0.001, D.elapsed + (now - loadT) / 1000 * D.speed) : D.elapsed;
+const indexAt = (t) => { let i = 0; while (i + 1 < N && D.starts[i + 1] <= t) i++; return i; };
+const ease = (u) => u * u * (3 - 2 * u);
+function angleOf(s, now) {
+  if (!D.anim || !(s.id in D.anim)) return s.angle;
+  const u = Math.max(0, Math.min(1, (now - loadT - ANIM_DELAY) / ANIM_MS));
+  return D.anim[s.id] + (s.angle - D.anim[s.id]) * ease(u);
+}
+function bez(s, t, a) {
+  const r = a * Math.PI / 180, dist = Math.hypot(t.x - s.x, t.y - s.y), d = Math.min(Math.max(0.55 * dist, 120), 420);
+  const c = { x: t.x + d * Math.cos(r), y: t.y + d * Math.sin(r) };
+  return { d: `M${s.x} ${s.y}Q${c.x} ${c.y} ${t.x} ${t.y}`, at: (u) => ({ x: (1 - u) ** 2 * s.x + 2 * (1 - u) * u * c.x + u * u * t.x, y: (1 - u) ** 2 * s.y + 2 * (1 - u) * u * c.y + u * u * t.y }) };
+}
+const series = (arr, k) => arr[Math.max(0, Math.min(arr.length - 1, Math.floor(k)))];
+
+let lastI = -1, lastPanel = 0;
+function onStep(i) {
+  const s = D.steps[i];
+  D.steps.forEach((x, n) => { const sl = slots[x.id], done = n < i;
+    sl.r.setAttribute("fill", done ? "#3A4A57" : x.color); sl.t.setAttribute("fill", done ? "#5B7184" : "#CFE3EE");
+    sl.t.textContent = (done ? "✓ " : "") + x.short; liveCells[n].classList.toggle("done", done); liveCells[n].classList.toggle("cur", n === i); });
+  const nxt = D.steps.slice(i + 1, i + 4);
+  nextLine.setAttribute("points", [s, ...nxt].map((p) => `${p.x},${p.y}`).join(" "));
+  nextDots.forEach((nd, k) => { const p = nxt[k]; nd.g.style.display = p ? "" : "none"; if (p) { nd.g.setAttribute("transform", `translate(${p.x} ${p.y})`); nd.t.textContent = i + 2 + k; } });
+  $("stepno").textContent = String(i + 1).padStart(2, "0");
+  $("taskline").textContent = `${s.name} · ${Math.round(s.dur)} s`;
+  $("steplabel").textContent = `MICRO-TÂCHE ${String(i + 1).padStart(2, "0")}/${N} · MACRO-ÉTAPE ${s.macro}/${D.macroCount}`;
+  $("stepname").textContent = s.name; $("stepmacro").textContent = s.macroName; $("stepdur").textContent = `${Math.round(s.dur)} s · ${s.joint}`;
+  const lk = $("steplock");
+  lk.className = "lockline " + (s.locked ? "locked" : "free");
+  lk.textContent = s.locked ? "🔒 Position verrouillée par le protocole qualité : l'IA ne peut pas la déplacer"
+                            : "↔ Micro-liberté : l'IA peut la déplacer si ses prérequis sont faits";
+  $("stepmeta").textContent = `${i + 1}/${N}`;
+}
+
+function panels(t) {
+  const left = Math.max(0, D.total - t);
+  $("clock").textContent = `${Math.floor(t)} s`; $("track").style.width = `${Math.min(100, (t / D.takt) * 100)}%`; $("elapsed").textContent = fmt(left);
+  let sum = 0, worst = 0;
+  for (const g of gauges) {
+    const v = series(D.fatigue.live[g.key], t - D.fatigue.t0), p = series(D.fatigue.proto[g.key], t);
+    sum += v; worst = Math.max(worst, v);
+    const c = v > 75 ? "#ef4444" : v >= 40 ? "#fb923c" : "#34d399";   // brief: green < 40, orange 40-75, red > 75
+    g.ring.style.setProperty("--p", `${Math.min(100, v) * 3.6}deg`); g.ring.style.setProperty("--c", c);
+    g.val.textContent = `${Math.round(v)}%`; g.lvl.textContent = v > 75 ? "DANGER" : v >= 40 ? "MODÉRÉ" : "SÛR";
+    const dlt = Math.round(p - v);
+    g.sub.innerHTML = D.mutated && dlt !== 0 ? `<s>${Math.round(p)}%</s><b class="${dlt < 0 ? "up" : ""}">${dlt > 0 ? "↓ " + dlt : "↑ " + -dlt}</b>` : "";
+  }
+  const comp = sum / gauges.length;
+  $("comp").textContent = `${Math.round(comp)} %`; $("comp").style.color = comp > 75 ? "#dc2626" : comp >= 40 ? "#d9480f" : "#14786f";
+  $("compnote").textContent = D.mutated ? "projection IA" : "protocole fixe";
+  $("fatstate").textContent = worst > 75 ? "DANGER" : worst >= 40 ? "MODÉRÉE" : "SÛRE";
+  $("fatstate").className = worst >= 40 ? "warn" : "";
+}
+
+function frame(now) {
+  const t = elapsedNow(now), i = indexAt(t);
+  if (i !== lastI) { onStep(i); lastI = i; }
+  const s = D.steps[i], T = { x: s.x, y: s.y };
+  const P = i > 0 ? { x: D.steps[i - 1].x, y: D.steps[i - 1].y } : { x: OP.x, y: OP.y - 110 };
+  const a = angleOf(s, now), b = bez(P, T, a);
+  for (const g of glow) g.setAttribute("d", b.d);
+  core.setAttribute("d", b.d); coreW.setAttribute("d", b.d);
+  const prog = Math.max(0, Math.min(1, (t - D.starts[i]) / s.dur)), q = b.at(prog);
+  dot.setAttribute("cx", q.x); dot.setAttribute("cy", q.y);
+  tgt.setAttribute("transform", `translate(${T.x} ${T.y})`);
+  halo.setAttribute("r", (17 + 4 * Math.sin(now / 260)) * K);
+  const r = a * Math.PI / 180;
+  arrow.setAttribute("x1", T.x + 95 * Math.cos(r)); arrow.setAttribute("y1", T.y + 95 * Math.sin(r));
+  arrow.setAttribute("x2", T.x + 22 * Math.cos(r)); arrow.setAttribute("y2", T.y + 22 * Math.sin(r));
+  const showGhost = D.mutated && Math.abs(s.ghost - a) > 0.5;
+  for (const e of [ghostPath, ghostLbl, arc, dGroup]) e.style.display = showGhost ? "" : "none";
+  if (showGhost) {
+    const gb = bez(P, T, s.ghost); ghostPath.setAttribute("d", gb.d);
+    const gl = gb.at(0.35); ghostLbl.setAttribute("x", gl.x); ghostLbl.setAttribute("y", gl.y - 8 * K);
+    const R = 115, g0 = s.ghost * Math.PI / 180;
+    arc.setAttribute("d", `M${T.x + R * Math.cos(g0)} ${T.y + R * Math.sin(g0)}A${R} ${R} 0 0 ${a > s.ghost ? 1 : 0} ${T.x + R * Math.cos(r)} ${T.y + R * Math.sin(r)}`);
+    const mid = (s.ghost + a) / 2 * Math.PI / 180, lx = T.x + (R + 60) * Math.cos(mid), ly = T.y + (R + 60) * Math.sin(mid);
+    dTxt.textContent = `${a - s.ghost >= 0 ? "+" : ""}${Math.round(a - s.ghost)}°`;
+    dTxt.setAttribute("x", lx); dTxt.setAttribute("y", ly + 4 * K);
+    dBox.setAttribute("x", lx - 24 * K); dBox.setAttribute("y", ly - 10 * K); dBox.setAttribute("width", 48 * K); dBox.setAttribute("height", 19 * K);
+  }
+  $("approach").textContent = `${Math.round(a)}°`;
+  if (now - lastPanel > 200) { panels(t); lastPanel = now; }
+  requestAnimationFrame(frame);
+}
+window.__projectorLoadedAt = Date.now();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
