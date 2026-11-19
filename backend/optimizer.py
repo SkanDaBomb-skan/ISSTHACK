@@ -93,7 +93,7 @@ class AssemblySequenceOptimizer:
         self,
         prev: Optional[AssemblyTask],
         cand: AssemblyTask,
-        completed_ids: Set[str]
+        completed_ids: Optional[Set[str]] = None
     ) -> float:
         """
         Fonction de coût biomécanique multi-articulaire & contraintes IATF :
@@ -103,7 +103,7 @@ class AssemblySequenceOptimizer:
 
         # Règle 0 : Qualité IATF 16949 & Cooldown Physiologique Final (Évite tout transfert de risque vers les coudes)
         # La phase M4 (sécurité CPA et clips carrosserie) ne doit JAMAIS démarrer tant que tout le rubanage M3 n'est pas terminé.
-        if cand.id.startswith("M4"):
+        if cand.id.startswith("M4") and completed_ids is not None:
             pending_m3 = any(tid.startswith("M3") and tid not in completed_ids for tid in self.tasks_dict)
             if pending_m3:
                 return 50000.0  # Verrouillage strict : interdiction de clipser avant d'avoir rubanné !
